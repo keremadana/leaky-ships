@@ -36,3 +36,42 @@
     transform: rotate(360deg);
   }
 }
+
+#game {
+  border: 5px solid orange;
+  position: relative;
+  height: 1200px;
+  width: 1200px;
+  display: grid;
+  grid-template-rows: repeat(12, 1fr);
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 1px solid blue;
+
+  .missle {
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    border: 1px solid red;
+    top: calc(50px + 100px * var(--y));
+    left: calc(50px + 100px* var(--x));
+    transform: translateX(-50%) translateY(-50%);
+  }
+
+  svg {
+    height: 50px;
+    width: 50px;
+    align-self: center;
+    justify-self: center;
+    grid-column: var(--x);
+    grid-row: var(--y);
+  }
+  .r1 {
+    border: 2px solid blue;
+  }
+  .r2 {
+    border: 2px solid green;
+  }
+  .r3 {
+    border: 2px solid yellowgreen;
+  }
+}
