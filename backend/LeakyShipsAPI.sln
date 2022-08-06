@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SinkyShipsAPI", "SinkyShipsAPI\SinkyShipsAPI.csproj", "{FB7A524F-B0C9-44DB-B1D9-776E01B28D93}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeakyShipsAPI", "LeakyShipsAPI\LeakyShipsAPI.csproj", "{FB7A524F-B0C9-44DB-B1D9-776E01B28D93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

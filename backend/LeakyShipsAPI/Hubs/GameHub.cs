@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace SinkyShipsAPI.Hubs;
+namespace LeakyShipsAPI.Hubs;
 
 public class GameHub : Hub
 {

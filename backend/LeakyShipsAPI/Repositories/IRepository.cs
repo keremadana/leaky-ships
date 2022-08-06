@@ -1,6 +1,6 @@
 ﻿using System.Dynamic;
 
-namespace SinkyShipsAPI.Repositories;
+namespace LeakyShipsAPI.Repositories;
 
 public interface IRepository<T>
 {

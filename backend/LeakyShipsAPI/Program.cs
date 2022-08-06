@@ -1,4 +1,4 @@
-using SinkyShipsAPI.Hubs;
+using LeakyShipsAPI.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();

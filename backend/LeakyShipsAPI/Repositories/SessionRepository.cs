@@ -1,6 +1,6 @@
-﻿using SinkyShipsAPI.Model;
+﻿using LeakyShipsAPI.Model;
 
-namespace SinkyShipsAPI.Repositories;
+namespace LeakyShipsAPI.Repositories;
 
 public class SessionRepository : IRepository<Session>
 {
