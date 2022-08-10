@@ -1,0 +1,18 @@
+@mixin transition($timing) {
+    -moz-transition: $timing;
+    -webkit-transition: $timing;
+    -o-transition: $timing;
+    -ms-transition: $timing;
+    transition: $timing;
+}
+@mixin appear($timing) {
+    animation: appear $timing forwards;
+}
+@keyframes appear {
+    From {
+        opacity: 0;
+    }
+    To {
+        opacity: 1;
+    }
+}
