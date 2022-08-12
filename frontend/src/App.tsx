@@ -10,17 +10,6 @@ function App() {
     x: 0,
     y: 0
   })
-  const [targetPreview, setTargetPreview] = useState({
-    event: false,
-    x: 0,
-    y: 0,
-    style: {
-      height: 0,
-      top: 0,
-      left: 0,
-      width: 0
-    }
-  })
 
   let borderTiles: JSX.Element[] = [];
   let shipElems: JSX.Element[] = [];
@@ -81,49 +70,23 @@ function App() {
           className={classNames}
           style={{'--x': (x + 1), '--y': (y + 1)} as CSSProperties}
           onClick={action ? () => setTarget({ event: true, x, y }) : () => {}}
-          onMouseEnter={e => {
-            const target = e.target as HTMLDivElement
-            if (action) {
-              setTargetPreview({
-                event: true,
-                x,
-                y,
-                style: {
-                  height: target.offsetHeight,
-                  left: target.offsetLeft,
-                  top: target.offsetTop,
-                  width: target.offsetWidth,
-                }
-              })
-            } else {
-              setTargetPreview(e => Object.assign({...e}, {
-                style: {
-                  height: target.offsetHeight,
-                  left: target.offsetLeft,
-                  top: target.offsetTop,
-                  width: target.offsetWidth,
-                }
-              }))
-            }
-          }}
-          onMouseLeave={action ? () => setTargetPreview(e => Object.assign({...e}, {event: false})) : () => {}}
-          ></div>)
+        ></div>
+      )
     }
   }
   
 
   for (let i = 1; i <= 6; i++) {
     shipElems.push(
-      <div key={i} className={`ship s${i}`} style={{'--i': i+3} as CSSProperties}>
+      <div key={i} className={`ship s${i}`} style={{'--x': i+3} as CSSProperties}>
         <img src={`/svgs/${i}.svg`} alt={`${i}.svg`}/>
       </div>);
   }
+
   return (
     <div className="App">
       <header className="App-header">
-        {[1,2,3,4,5,6,11,12,13,14].map((num, i) => <img key={i} src={`/svgs/${num}.svg`} alt={`${num}.svg`} />)}
-        {[1,2,3,4].map((num, i) => <img key={i} src={`/fog/fog${num}.png`} alt={`fog${num}.png`} />)}
-        <div id="game-frame">
+        <div id="game-frame" style={{'--i': count} as CSSProperties}>
           {/* Bordes */}
           { borderTiles }
 
@@ -143,7 +106,7 @@ function App() {
           <div className={`hit-svg target ${target.event ? 'show' : ''}`} style={{'--x': target.x+1, '--y': target.y+1} as CSSProperties}>
             <FontAwesomeIcon icon={faCrosshairs} />
           </div>
-          <div className={`hit-svg target-preview ${targetPreview.event && (target.x !== targetPreview.x || target.y !== targetPreview.y) ? 'show' : ''}`} style={targetPreview.style}>
+          <div className={`hit-svg target-preview`}>
             <FontAwesomeIcon icon={faCrosshairs} />
           </div>
         </div>

@@ -11,12 +11,6 @@
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: $theme;
   min-height: 100vh;
@@ -42,9 +36,11 @@
 
 #game-frame {
   // border: 1px solid orange;
-  // position: relative;
-  height: 945px;
-  width: 945px;
+  position: relative;
+  $height: 945px;
+  $width: $height;
+  height: $height;
+  width: $width;
   display: grid;
   align-items: center;
   justify-items: center;
@@ -101,6 +97,39 @@
       -webkit-mask-image: -webkit-gradient(linear, left top, 
         left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
     }
+
+    $point-size: 1;
+    $count: 12;
+    $grid-elem-width: $count + 2;
+    $warst: $count + 1.5;
+    $one: calc($height / $warst);
+    $elements-in-grid: $grid-elem-width * $grid-elem-width;
+    
+    // Inspired by https://stackoverflow.com/questions/35990505/get-position-of-mouse-pointer-in-css-without-javascript
+    @for $i from 1 through $elements-in-grid {
+      &:nth-child(#{$i}) {
+        &:hover {
+          &:not(.edge) ~ .target-preview {
+            opacity: 1;
+          }
+          & ~ .target-preview {
+            $row: ceil(calc($i / $grid-elem-width));
+            top: (
+              ($row - 2)
+              * $one
+              + ($one * 0.75)
+              );
+            left: (
+              ($i
+                - (($row - 1) * $grid-elem-width)
+                - 2)
+              * $one
+              + ($one * 0.75)
+            );
+          }
+        }
+      }
+    }
   }
   > :not(.border) {
     box-sizing: border-box;
@@ -119,7 +148,7 @@
     align-items: center;
     // justify-content: center;
     border: 1px solid yellow;
-    grid-row: var(--i);
+    grid-row: var(--x);
     
     img {
       position: absolute;
@@ -193,6 +222,10 @@
       opacity: 0;
       position: absolute;
       @include transition(.2s);
+      
+      $count: 12;
+      height: calc($height / ($count + 1.5));
+      width: calc($height / ($count + 1.5));
 
       &.show {
         opacity: 1;
