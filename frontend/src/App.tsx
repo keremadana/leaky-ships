@@ -1,12 +1,23 @@
 import { faBurst, faCrosshairs, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CSSProperties, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
+import { TargetPreviewType } from './interfaces';
 import './styles/App.scss';
 
 function App() {
 
   const [target, setTarget] = useState({
-    event: false,
+    show: false,
+    x: 0,
+    y: 0
+  })
+  const [targetPreview, setTargetPreview] = useState<TargetPreviewType>({
+    newX: 0,
+    newY: 0,
+    shouldShow: false,
+    appearOK: false,
+    eventReady: true,
+    show: false,
     x: 0,
     y: 0
   })
@@ -43,38 +54,101 @@ function App() {
     <div key={i} className='hit-svg' style={{'--x': obj.x, '--y': obj.y} as CSSProperties}>
       <FontAwesomeIcon icon={faBurst} />
     </div>);
+    const corner = (x: number, y: number, count: number) => {switch (true) {
+      case x === 0 && y === 0:
+        return 'left-top-corner';
+      case x === count+1 && y === 0:
+        return 'right-top-corner';
+      case x === 0 && y === count+1:
+        return 'left-bottom-corner';
+      case x === count+1 && y === count+1:
+        return 'right-bottom-corner';
+    
+      default:
+        return '';
+    }};
+    const border = (x: number, y: number, count: number) => {switch (true) {
+      case x === 0:
+        return 'left';
+      case y === 0:
+        return 'top';
+      case x === count+1:
+        return 'right';
+      case y === count+1:
+        return 'bottom';
+    
+      default:
+        return '';
+    }};
   for (let y = 0; y < count+2; y++) {
     for (let x = 0; x < count+2; x++) {
-      const corner = [
-        x === 0 && y === 0 ? 'left-top-corner' : '',
-        x === count+1 && y === 0 ? 'right-top-corner' : '',
-        x === 0 && y === count+1 ? 'left-bottom-corner' : '',
-        x === count+1 && y === count+1 ? 'right-bottom-corner' : ''
-      ].filter(s => s);
-      const border = [
-        x === 0 ? 'left' : '',
-        y === 0 ? 'top' : '',
-        x === count+1 ? 'right' : '',
-        y === count+1 ? 'bottom' : ''
-      ].filter(s => s);
-      const borderType = corner.length ? corner[0] : border[0];
-      const action = x > 0 && x < count+1 && y > 0 && y < count+1;
-      const classNames = [
-        'border-tile',
-        borderType ? `edge ${borderType}` : '',
-        action ? 'action' : ''
-      ].join(' ')
+      const cornerReslt = corner(x, y, count);
+      const borderType = cornerReslt ? cornerReslt : border(x, y, count);
+      const isGameTile = x > 0 && x < count+1 && y > 0 && y < count+1;
+      const classNames = ['border-tile'];
+      if (borderType)
+        classNames.push('edge', borderType);
+      if (isGameTile)
+        classNames.push('game-tile');
       borderTiles.push(
         <div
           key={y*(count+2)+x}
-          className={classNames}
+          className={classNames.join(' ')}
           style={{'--x': (x + 1), '--y': (y + 1)} as CSSProperties}
-          onClick={action ? () => setTarget({ event: true, x, y }) : () => {}}
+          onClick={() => {
+            if (isGameTile)
+              setTarget({ show: true, x, y });
+          }}
+          onMouseEnter={() => setTargetPreview(e => ({...e, newX: x, newY: y, shouldShow: isGameTile}))}
         ></div>
       )
     }
   }
   
+  // handle visibility and position change of targetPreview
+  useEffect(() => {
+    const {newX, newY, shouldShow, appearOK, eventReady, show, x, y} = targetPreview;
+    const positionChange = !(x === newX && y === newY);
+    // if not ready or no new position
+    if (!eventReady || !positionChange)
+      return;
+    if (show) {
+      // hide preview to change position when hidden
+      setTargetPreview(e => ({...e, appearOK: false, eventReady: false, show: false}));
+    } else if (shouldShow && appearOK) {
+      // BUT only appear again if it's supposed to (in case the mouse left over the edge) and ()
+      setTargetPreview(e => ({...e, appearOK: false, eventReady: false, show: true, x: newX, y: newY}));
+    }
+  }, [targetPreview])
+
+  // enable targetPreview event again after 200 mil. sec.
+  useEffect(() => {
+    if (targetPreview.eventReady)
+      return;
+    const autoTimeout = setTimeout(() => {
+      setTargetPreview(e => ({...e, eventReady: true}));
+    }, 200);
+  
+    // or abort if state has changed early
+    return () => {
+      clearTimeout(autoTimeout);
+    }
+  }, [targetPreview.eventReady]);
+
+  // approve targetPreview new position after 200 mil. sec.
+  useEffect(() => {
+    // early return to start cooldown only when about to show up
+    if (!targetPreview.shouldShow)
+      return;
+    const autoTimeout = setTimeout(() => {
+      setTargetPreview(e => ({...e, appearOK: true}));
+    }, 350);
+  
+    // or abort if movement is repeated early
+    return () => {
+      clearTimeout(autoTimeout);
+    }
+  }, [targetPreview.shouldShow, targetPreview.newX, targetPreview.newY]);
 
   for (let i = 1; i <= 6; i++) {
     shipElems.push(
@@ -103,10 +177,10 @@ function App() {
           {/* <img className='fog-left' src={`/fog/fog2.png`} alt={`fog1.png`} />
           <img className='fog-right' src={`/fog/fog2.png`} alt={`fog1.png`} />
           <img className='fog-middle' src={`/fog/fog4.png`} alt={`fog4.png`} /> */}
-          <div className={`hit-svg target ${target.event ? 'show' : ''}`} style={{'--x': target.x+1, '--y': target.y+1} as CSSProperties}>
+          <div className={`hit-svg target ${target.show ? 'show' : ''}`} style={{'--x': target.x+1, '--y': target.y+1} as CSSProperties}>
             <FontAwesomeIcon icon={faCrosshairs} />
           </div>
-          <div className={`hit-svg target-preview`}>
+          <div className={`hit-svg target-preview ${targetPreview.show && (target.x !== targetPreview.x || target.y !== targetPreview.y) ? 'show' : ''}`} style={{'--x': targetPreview.x+1, '--y': targetPreview.y+1} as CSSProperties}>
             <FontAwesomeIcon icon={faCrosshairs} />
           </div>
         </div>
