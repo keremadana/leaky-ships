@@ -1,109 +1,41 @@
-import { faBurst, faCrosshairs, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCrosshairs } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CSSProperties, useEffect, useState } from 'react';
-import { TargetPreviewType } from './interfaces';
+import { CSSProperties, useEffect, useReducer, useState } from 'react';
+import BorderTiles from './components/BorderTiles';
+import FogImages from './components/FogImages';
+import HitElems from './components/HitElems';
+import Labeling from './components/Labeling';
+import Ships from './components/Ships';
+import { hitReducer, initlialTarget, initlialTargetPreview } from './helpers';
+import { HitType, TargetPreviewType, TargetType } from './interfaces';
 import './styles/App.scss';
 
 function App() {
 
-  const [target, setTarget] = useState({
-    show: false,
-    x: 0,
-    y: 0
-  })
-  const [targetPreview, setTargetPreview] = useState<TargetPreviewType>({
-    newX: 0,
-    newY: 0,
-    shouldShow: false,
-    appearOK: false,
-    eventReady: true,
-    show: false,
-    x: 0,
-    y: 0
-  })
+  const count = 12;
+  const [target, setTarget] = useState<TargetType>(initlialTarget);
+  const [targetPreview, setTargetPreview] = useState<TargetPreviewType>(initlialTargetPreview);
+  const [hits, DispatchHits] = useReducer(hitReducer, [] as HitType[]);
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
 
-  let borderTiles: JSX.Element[] = [];
-  let shipElems: JSX.Element[] = [];
-  let elems2: {
-    field: string,
-    x: number,
-    y: number,
-  }[] = [];
-  let hitElems: {
-      field: string,
-      x: number,
-      y: number,
-    }[] = [],
-    count = 12;
-  for (let y = 0; y < count; y++) {
-    elems2.push(...[
-      // Up
-      { field: String.fromCharCode(65+y), x: y+2, y: 1 },
-      // Left
-      { field: (y+1).toString(), x: 1, y: y+2 },
-      // Bottom
-      { field: String.fromCharCode(65+y), x: y+2, y: count+2 },
-      // Right
-      { field: (y+1).toString(), x: count+2, y: y+2 }
-    ]);
-    for (let x = 0; x < count; x++) {
-      hitElems.push({ field: String.fromCharCode(65+x)+(y), x: x+2, y: y+2 })
+  useEffect(() => {
+    if (hits.length === count*count)
+      return;
+    if (x === count) {
+      setX(0);
+      setY(y => y+1);
+      return;
     }
-  }
-  const hitSVGs = hitElems.map((obj, i) => 
-    <div key={i} className='hit-svg' style={{'--x': obj.x, '--y': obj.y} as CSSProperties}>
-      <FontAwesomeIcon icon={faBurst} />
-    </div>);
-    const corner = (x: number, y: number, count: number) => {switch (true) {
-      case x === 0 && y === 0:
-        return 'left-top-corner';
-      case x === count+1 && y === 0:
-        return 'right-top-corner';
-      case x === 0 && y === count+1:
-        return 'left-bottom-corner';
-      case x === count+1 && y === count+1:
-        return 'right-bottom-corner';
-    
-      default:
-        return '';
-    }};
-    const border = (x: number, y: number, count: number) => {switch (true) {
-      case x === 0:
-        return 'left';
-      case y === 0:
-        return 'top';
-      case x === count+1:
-        return 'right';
-      case y === count+1:
-        return 'bottom';
-    
-      default:
-        return '';
-    }};
-  for (let y = 0; y < count+2; y++) {
-    for (let x = 0; x < count+2; x++) {
-      const cornerReslt = corner(x, y, count);
-      const borderType = cornerReslt ? cornerReslt : border(x, y, count);
-      const isGameTile = x > 0 && x < count+1 && y > 0 && y < count+1;
-      const classNames = ['border-tile'];
-      if (borderType)
-        classNames.push('edge', borderType);
-      if (isGameTile)
-        classNames.push('game-tile');
-      borderTiles.push(
-        <div
-          key={y*(count+2)+x}
-          className={classNames.join(' ')}
-          style={{'--x': (x + 1), '--y': (y + 1)} as CSSProperties}
-          onClick={() => {
-            if (isGameTile)
-              setTarget({ show: true, x, y });
-          }}
-          onMouseEnter={() => setTargetPreview(e => ({...e, newX: x, newY: y, shouldShow: isGameTile}))}
-        ></div>
-      )
+    const autoTimer = setTimeout(() => {
+      DispatchHits({type: 'fireMissle', payload: {hit: (x+y)%2 !== 0, x: x+2, y: y+2}});
+      setX(x => x+1);
+    }, 100);
+  
+    return () => {
+      clearTimeout(autoTimer);
     }
-  }
+  }, [x, y, hits.length]);
   
   // handle visibility and position change of targetPreview
   useEffect(() => {
@@ -150,33 +82,23 @@ function App() {
     }
   }, [targetPreview.shouldShow, targetPreview.newX, targetPreview.newY]);
 
-  for (let i = 1; i <= 6; i++) {
-    shipElems.push(
-      <div key={i} className={`ship s${i}`} style={{'--x': i+3} as CSSProperties}>
-        <img src={`/svgs/${i}.svg`} alt={`${i}.svg`}/>
-      </div>);
-  }
-
   return (
     <div className="App">
       <header className="App-header">
         <div id="game-frame" style={{'--i': count} as CSSProperties}>
           {/* Bordes */}
-          { borderTiles }
+          <BorderTiles count={count} targets={{setTarget, setTargetPreview}} />
 
           {/* Collumn lettes and row numbers */}
-          {elems2.map((obj, i) =>
-            <span key={i} className={`${obj.field} r1`} style={{'--x': obj.x, '--y': obj.y} as CSSProperties}>{obj.field}</span>
-          )}
-          { hitSVGs }
+          <Labeling count={count} />
 
           {/* Ships */}
-          {/* { shipElems } */}
+          {/* <Ships /> */}
+
+          <HitElems hits={hits} />
 
           {/* Fog images */}
-          {/* <img className='fog-left' src={`/fog/fog2.png`} alt={`fog1.png`} />
-          <img className='fog-right' src={`/fog/fog2.png`} alt={`fog1.png`} />
-          <img className='fog-middle' src={`/fog/fog4.png`} alt={`fog4.png`} /> */}
+          {/* <FogImages /> */}
           <div className={`hit-svg target ${target.show ? 'show' : ''}`} style={{'--x': target.x+1, '--y': target.y+1} as CSSProperties}>
             <FontAwesomeIcon icon={faCrosshairs} />
           </div>
@@ -184,9 +106,9 @@ function App() {
             <FontAwesomeIcon icon={faCrosshairs} />
           </div>
         </div>
-        <p>
+        {/* <p>
           Edit <code>src/App.tsx</code> and save to reload.
-        </p>
+        </p> */}
         <a 
           className="App-link"
           href="https://www.freepik.com/free-vector/militaristic-ships-set-navy-ammunition-warship-submarine-nuclear-battleship-float-cruiser-trawler-gunboat-frigate-ferry_10704121.htm"

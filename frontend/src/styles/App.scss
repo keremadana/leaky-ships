@@ -48,7 +48,7 @@
   grid-template-columns: .75fr repeat(12, 1fr) .75fr;
   // grid-gap: 1px solid blue;
 
-  > .r1 {
+  > .label {
     grid-column: var(--x);
     grid-row: var(--y);
   }
@@ -83,6 +83,7 @@
     // justify-content: center;
     border: 1px solid yellow;
     grid-row: var(--x);
+    pointer-events: none;
     
     img {
       position: absolute;
