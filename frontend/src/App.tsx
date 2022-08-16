@@ -22,7 +22,7 @@ function App() {
     const {newX, newY, shouldShow, appearOK, eventReady, show, x, y} = targetPreview;
     const positionChange = !(x === newX && y === newY);
     // if not ready or no new position
-    if (!eventReady || !positionChange)
+    if (!eventReady || (!positionChange && show))
       return;
     if (show) {
       // hide preview to change position when hidden
