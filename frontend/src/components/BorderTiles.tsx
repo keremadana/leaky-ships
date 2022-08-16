@@ -1,8 +1,8 @@
-import { CSSProperties } from 'react';
-import { borderCN, cornerCN, fieldIndex } from '../helpers';
-import { TargetPreviewType, TargetType } from '../interfaces';
+import { CSSProperties, Dispatch, SetStateAction } from 'react';
+import { borderCN, cornerCN, fieldIndex, isHit } from '../helpers';
+import { HitDispatchType, HitType, TargetPreviewType, TargetType } from '../interfaces';
 
-function BorderTiles({count, targets: {setTarget, setTargetPreview}}: {count: number, targets: {setTarget: React.Dispatch<React.SetStateAction<TargetType>>, setTargetPreview: React.Dispatch<React.SetStateAction<TargetPreviewType>>}}) {
+function BorderTiles({count, actions: {setTarget, setTargetPreview, hits, DispatchHits}}: {count: number, actions: {setTarget: Dispatch<SetStateAction<TargetType>>, setTargetPreview: Dispatch<SetStateAction<TargetPreviewType>>, hits: HitType[], DispatchHits: Dispatch<HitDispatchType>}}) {
     let tilesProperties: {
         key: number,
         isGameTile: boolean,
@@ -23,7 +23,7 @@ function BorderTiles({count, targets: {setTarget, setTargetPreview}}: {count: nu
             if (isGameTile)
                 classNames.push('game-tile');
             const classNameString = classNames.join(' ')
-            tilesProperties.push({key, classNameString, isGameTile, x, y})
+            tilesProperties.push({key, classNameString, isGameTile, x: x+1, y: y+1})
         }
     }
     return <>
@@ -31,10 +31,19 @@ function BorderTiles({count, targets: {setTarget, setTargetPreview}}: {count: nu
             return <div
                 key={key}
                 className={classNameString}
-                style={{'--x': (x + 1), '--y': (y + 1)} as CSSProperties}
+                style={{'--x': x, '--y': y} as CSSProperties}
                 onClick={() => {
-                    if (isGameTile)
-                    setTarget({ show: true, x, y });
+                    if (!isGameTile && !isHit(hits, x, y).length)
+                        return;
+                    setTarget(t => {
+                        if (t.x === x && t.y === y) {
+                            DispatchHits({type: 'fireMissle', payload: {hit: (x+y)%2 !== 0, x, y}});
+                            return { show: false, x, y };
+                        } else {
+                            return { show: true, x, y };
+                        }
+                    });
+
                 }}
                 onMouseEnter={() => setTargetPreview(e => ({...e, newX: x, newY: y, shouldShow: isGameTile}))}
             ></div>

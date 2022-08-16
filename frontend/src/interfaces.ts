@@ -25,5 +25,6 @@ export interface HitType {
 };
 
 interface fireMissle { type: 'fireMissle', payload: { x: number, y: number, hit: boolean } };
+interface removeMissle { type: 'removeMissle', payload: { x: number, y: number, hit: boolean } };
 
-export type HitDispatchType = fireMissle;
+export type HitDispatchType = fireMissle | removeMissle;

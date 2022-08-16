@@ -6,7 +6,7 @@ import FogImages from './components/FogImages';
 import HitElems from './components/HitElems';
 import Labeling from './components/Labeling';
 import Ships from './components/Ships';
-import { hitReducer, initlialTarget, initlialTargetPreview } from './helpers';
+import { hitReducer, initlialTarget, initlialTargetPreview, isHit } from './helpers';
 import { HitType, TargetPreviewType, TargetType } from './interfaces';
 import './styles/App.scss';
 
@@ -16,26 +16,6 @@ function App() {
   const [target, setTarget] = useState<TargetType>(initlialTarget);
   const [targetPreview, setTargetPreview] = useState<TargetPreviewType>(initlialTargetPreview);
   const [hits, DispatchHits] = useReducer(hitReducer, [] as HitType[]);
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
-
-  useEffect(() => {
-    if (hits.length === count*count)
-      return;
-    if (x === count) {
-      setX(0);
-      setY(y => y+1);
-      return;
-    }
-    const autoTimer = setTimeout(() => {
-      DispatchHits({type: 'fireMissle', payload: {hit: (x+y)%2 !== 0, x: x+2, y: y+2}});
-      setX(x => x+1);
-    }, 100);
-  
-    return () => {
-      clearTimeout(autoTimer);
-    }
-  }, [x, y, hits.length]);
   
   // handle visibility and position change of targetPreview
   useEffect(() => {
@@ -47,11 +27,11 @@ function App() {
     if (show) {
       // hide preview to change position when hidden
       setTargetPreview(e => ({...e, appearOK: false, eventReady: false, show: false}));
-    } else if (shouldShow && appearOK) {
+    } else if (shouldShow && appearOK && !isHit(hits, newX, newY).length) {
       // BUT only appear again if it's supposed to (in case the mouse left over the edge) and ()
       setTargetPreview(e => ({...e, appearOK: false, eventReady: false, show: true, x: newX, y: newY}));
     }
-  }, [targetPreview])
+  }, [targetPreview, hits])
 
   // enable targetPreview event again after 200 mil. sec.
   useEffect(() => {
@@ -87,7 +67,7 @@ function App() {
       <header className="App-header">
         <div id="game-frame" style={{'--i': count} as CSSProperties}>
           {/* Bordes */}
-          <BorderTiles count={count} targets={{setTarget, setTargetPreview}} />
+          <BorderTiles count={count} actions={{setTarget, setTargetPreview, hits, DispatchHits}} />
 
           {/* Collumn lettes and row numbers */}
           <Labeling count={count} />
@@ -99,10 +79,10 @@ function App() {
 
           {/* Fog images */}
           {/* <FogImages /> */}
-          <div className={`hit-svg target ${target.show ? 'show' : ''}`} style={{'--x': target.x+1, '--y': target.y+1} as CSSProperties}>
+          <div className={`hit-svg target ${target.show ? 'show' : ''}`} style={{'--x': target.x, '--y': target.y} as CSSProperties}>
             <FontAwesomeIcon icon={faCrosshairs} />
           </div>
-          <div className={`hit-svg target-preview ${targetPreview.show && (target.x !== targetPreview.x || target.y !== targetPreview.y) ? 'show' : ''}`} style={{'--x': targetPreview.x+1, '--y': targetPreview.y+1} as CSSProperties}>
+          <div className={`hit-svg target-preview ${targetPreview.show && (target.x !== targetPreview.x || target.y !== targetPreview.y) ? 'show' : ''}`} style={{'--x': targetPreview.x, '--y': targetPreview.y} as CSSProperties}>
             <FontAwesomeIcon icon={faCrosshairs} />
           </div>
         </div>
