@@ -41,6 +41,8 @@
   $width: $height;
   height: $height;
   width: $width;
+  max-height: 100vw;
+  max-width: 100vw;
   display: grid;
   align-items: center;
   justify-items: center;
