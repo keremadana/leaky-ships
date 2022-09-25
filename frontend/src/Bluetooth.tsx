@@ -1,108 +1,150 @@
+import { useState } from "react"
+
 function Bluetooth() {
-    const connectToDevice = async () => {
-        if (!navigator.bluetooth)
-            console.log('Web Bluetooth is not available!');
-        navigator.bluetooth
-            .requestDevice({
-                filters: [
-                    { namePrefix: "Chromecast Remote" }
-                ],
-                optionalServices: ["battery_service"],
-            })
-            .then(device => {
-                console.log(device);
-                // console.log(device.id, device.name, device.gatt);
-                // Set up event listener for when device gets disconnected.
-                device.addEventListener('gattserverdisconnected', onDisconnected);
+    const [startDisabled, setStartDisabled] = useState(true)
+    const [stopDisabled, setStopDisabled] = useState(true)
 
-                console.log(1)
-                // Attempts to connect to remote GATT Server.
-                const gatt = device.gatt
-                if (!gatt)
-                    throw new Error('no gatt');
-                return gatt.connect();
+    const deviceName = 'Chromecast Remote'
+    // ble UV Index
+    const bleService = 'environmental_sensing'
+    const bleCharacteristic = 'uv_index'
+
+    // ble Battery percentage
+    // const bleService = 'battery_service'
+    // const bleCharacteristic = 'battery_level'
+
+    // ble Manufacturer Name
+    // const bleService = 'device_information'
+    // const bleCharacteristic = 'manufacturer_name_string'
+    let bluetoothDeviceDetected: BluetoothDevice
+    let gattCharacteristic: BluetoothRemoteGATTCharacteristic
+
+    function isWebBluetoothEnabled() {
+        if (!navigator.bluetooth) {
+            alert('Web Bluetooth API is not available in this browser!')
+            return false
+        }
+        return true
+    }
+    function getDeviceInfo() {
+        const options = {
+            // acceptAllDevices: true,
+            filters: [
+                { name: deviceName }
+            ],
+            // optionalServices: ['battery_service'],
+        }
+
+        console.log('Requesting Bluetooth Device...')
+
+        return navigator.bluetooth
+            .requestDevice(options)
+            .then(device => {
+                bluetoothDeviceDetected = device
+                console.log('> Name: ' + device.name)
+                device.addEventListener('gattserverdisconnected', onDisconnected)
             })
+            .catch(error => console.log('Argh! ' + error))
+    }
+    function read() {
+        if (!isWebBluetoothEnabled())
+            return
+        return getDeviceInfo()
+            .then(connectGatt)
+            .then(_ => {
+                console.log('Reading UV Index...')
+                return gattCharacteristic.readValue()
+            })
+            .catch(error => console.log('Waiting to start reading: ' + error))
+    }
+    function connectGatt() {
+        if (bluetoothDeviceDetected.gatt && bluetoothDeviceDetected.gatt.connected && gattCharacteristic)
+            return Promise.resolve()
+        if (!bluetoothDeviceDetected || !bluetoothDeviceDetected.gatt)
+            return Promise.reject()
+        return bluetoothDeviceDetected.gatt.connect()
             .then(server => {
-                console.log(2)
-                console.log(server)
-                // Getting Battery Service…
-                return server.getPrimaryService('battery_service');
+                console.log('Getting GATT Service...')
+                return server.getPrimaryService(bleService)
             })
             .then(service => {
-                console.log(3)
-                // Getting Battery Level Characteristic…
-                return service.getCharacteristic('battery_level');
-                // return service.getCharacteristic(0x2a19);
+                console.log('Getting GATT Characteristic...')
+                return service.getCharacteristic(bleCharacteristic)
             })
             .then(characteristic => {
-                console.log(4)
-                // Reading Battery Level…
-                return characteristic.readValue();
+                gattCharacteristic = characteristic
+                characteristic.addEventListener('characteristicvaluechanged', handleChangedValue)
+
+                setStartDisabled(false)
+                setStopDisabled(true)
             })
-            .then(value => {
-                console.log(5)
-                console.log(`Battery percentage is ${value.getUint8(0)}`);
-            })
-            .catch(error => { console.log(error); });
     }
-    const connectToDevice2 = async () => {
-        if (!navigator.bluetooth)
-            console.log('Web Bluetooth is not available!');
-        let device = await navigator.bluetooth
-        navigator.bluetooth
-            .requestDevice({
-                filters: [
-                    { namePrefix: "Chromecast Remote" }
-                ],
-                optionalServices: ["device_information"],
-            })
-            .then(device => {
-                // Set up event listener for when device gets disconnected.
-                device.addEventListener('gattserverdisconnected', onDisconnected);
+    function handleChangedValue(event: Event) {
+        const characteristic = event.target as BluetoothRemoteGATTCharacteristic
+        if (!characteristic.value) {
+            console.log('Characteristic undefined!')
+            return
+        }
+        const value = characteristic.value.getUint8(0)
+        const now = new Date()
+        // Output the UV Index
+        console.log(`> ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()} UV Index is ${value}`)
 
-                console.log(1)
-                // Attempts to connect to remote GATT Server.
-                const gatt = device.gatt
-                if (!gatt)
-                    throw new Error('no gatt');
-                return gatt.connect();
-            })
-            .then(server => {
-                console.log(2)
-                console.log(server)
-                // Getting Battery Service…
-                return server.getPrimaryService('device_information');
-            })
-            .then(service => {
-                console.log(3)
-                // Getting Battery Level Characteristic…
-                return service.getCharacteristic('manufacturer_name_string');
-            })
-            .then(characteristic => {
-                console.log(4)
-                // Reading Battery Level…
-                return characteristic.readValue();
-            })
-            .then(value => {
-                console.log(5)
-                let decoder = new TextDecoder('utf-8');
-                console.log(decoder.decode(value));
-            })
-            .catch(error => { console.log(error); });
+        // Output the Battery percentage
+        // console.log(`> ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()} Battery percentage is ${value}`)
+
+        // Output the Manufacturer Name
+        // let decoder = new TextDecoder('utf-8')
+        // console.log(`> ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()} Manufacturer Name is ${decoder.decode(characteristic.value)}`)
     }
-
-    const onDisconnected = (event: any) => {
-        // alert("Device Disconnected");
-        // console.log(event);
-        const device = event.target;
-        console.log(`Device "${device.name}" is disconnected.`);
+    function start() {
+        if (!isWebBluetoothEnabled())
+            return
+        gattCharacteristic.startNotifications()
+            .then(_ => {
+                console.log('Start reading...')
+                setStartDisabled(true)
+                setStopDisabled(false)
+            })
+            .catch(error => console.log('[ERROR] Start: ' + error))
     }
-
-
+    function stop() {
+        if (!isWebBluetoothEnabled())
+            return
+        gattCharacteristic.stopNotifications()
+            .then(_ => {
+                console.log('Stop reading...')
+                setStartDisabled(false)
+                setStopDisabled(true)
+            })
+            .catch(error => console.log('[ERROR] Stop: ' + error))
+    }
+    function onDisconnected(event: Event) {
+        alert("Device Disconnected")
+        // console.log(event)
+        const device = event.target as BluetoothDevice
+        console.log(`Device "${device.name}" is disconnected.`)
+    }
 
     return (
         <>
-            <button className="bluetooth" onClick={connectToDevice2}>CONNECT</button>
+            <button
+                id="read"
+                className="bluetooth"
+                onClick={read}
+            >Connect with BLE device</button>
+            <button
+                id="start"
+                className="bluetooth"
+                disabled={startDisabled}
+                onClick={start}
+            >Start</button>
+            <button
+                id="stop"
+                className="bluetooth"
+                disabled={stopDisabled}
+                onClick={stop}
+            >Stop</button>
         </>
     )
 
