@@ -62,7 +62,7 @@ function Homepage2() {
                 setTimeout(() => {
                     setActve(false)
                     setCount(e => e + 1)
-                }, Math.max(...warst) * 1000 + 300)
+                }, Math.max(...warst) * 1000 + 1000)
             }
 
             return (
