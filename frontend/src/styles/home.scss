@@ -8,12 +8,10 @@
     grid-template-rows: repeat(var(--rows), 1fr);
 
     .tile {
-        @include transition(1s);
-        outline: 1px solid white;
-        background-color: black;
+        background-color: var(--bg-color1);
 
         &.active {
-            animation: bright .5s forwards;
+            animation: bright .3s forwards;
             animation-delay: var(--delay);
         }
     }
@@ -21,16 +19,18 @@
 
 @keyframes bright {
     0% {
-        background-color: black;
+        background-color: var(--bg-color1);
     }
 
     50% {
 
-        background-color: white;
+        background-color: var(--bg-color2);
+        filter: brightness(130%);
+        outline: 1px solid white;
     }
 
     100% {
 
-        background-color: gray;
+        background-color: var(--bg-color2);
     }
 }
