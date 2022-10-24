@@ -10,6 +10,7 @@ function Homepage2() {
     const [params, setParams] = useState({ columns, rows, quantity: columns * rows })
     const [position, setPosition] = useState([0, 0])
     const [active, setActve] = useState(false)
+    const [action, setAction] = useState(false)
     const [count, setCount] = useState(0)
 
     useEffect(() => {
@@ -30,13 +31,12 @@ function Homepage2() {
 
     const createTiles = useMemo(() => {
 
-        const colors = [
-            'rgb(229, 57, 53)',
-            'rgb(253, 216, 53)',
-            'rgb(244, 81, 30)',
-            'rgb(76, 175, 80)',
-            'rgb(33, 150, 243)',
-            'rgb(156, 39, 176)'
+        const sentences = [
+            'Ethem ...',
+            'hat ...',
+            'lange ...',
+            'Hörner 🐂',
+            'Grüße von Mallorca 🌊 🦦 ☀️'
         ]
 
         function createTile(index: number) {
@@ -48,27 +48,28 @@ function Homepage2() {
             const pos = (Math.sqrt(xDiff * xDiff + yDiff * yDiff)).toFixed(2)
 
             const doEffect = (posX: number, posY: number) => {
-                if (active)
+                if (action)
                     return
                 setPosition([posX, posY])
-                setActve(true)
+                setActve(e => !e)
+                setAction(true)
 
-                const xDiff = (x: number) => (x - posX) / 20
-                const yDiff = (y: number) => (y - posY) / 20
+                const xDiff = (x: number) => (x - posX) / 50
+                const yDiff = (y: number) => (y - posY) / 50
                 const pos = (x: number, y: number) => Math.sqrt(xDiff(x) * xDiff(x) + yDiff(y) * yDiff(y))
-                const warst = [pos(0, 0), pos(params.columns, 0), pos(0, params.rows), pos(params.columns, params.rows)]
-                // console.log(warst, params)
+                const diagonals = [pos(0, 0), pos(params.columns, 0), pos(0, params.rows), pos(params.columns, params.rows)]
 
                 setTimeout(() => {
-                    setActve(false)
-                    setCount(e => e + 1)
-                }, Math.max(...warst) * 1000 + 1000)
+                    setAction(false)
+                    if (active)
+                        setCount(e => e + 1)
+                }, Math.max(...diagonals) * 1000 + 1000)
             }
 
             return (
                 <div
                     key={index}
-                    className={'tile ' + (active ? 'active' : '')}
+                    className={'tile ' + (active ? 'active' : 'inactive')}
                     style={{ '--delay': pos + 's' } as CSSProperties}
                     onClick={() => doEffect(x, y)}
                 ></div>
@@ -76,11 +77,14 @@ function Homepage2() {
         }
 
         return (
-            <div id='tiles' style={{ '--columns': params.columns, '--rows': params.rows, '--bg-color1': colors[count % (colors.length - 1)], '--bg-color2': colors[(count + 1) % (colors.length - 1)] } as CSSProperties}>
+            <div id='tiles' style={{ '--columns': params.columns, '--rows': params.rows } as CSSProperties}>
+                <div className="center-div">
+                    <h1 className={'headline ' + (!active ? 'active' : 'inactive')}>{sentences[count % sentences.length]}</h1>
+                </div>
                 {Array.from(Array(params.quantity)).map((_tile, index) => createTile(index))}
-            </div>
+            </div >
         )
-    }, [params, position, active, count])
+    }, [params, position, active, action])
 
     return createTiles
 }

@@ -14,7 +14,6 @@ $g2: rgb(236, 64, 122);
 
     .tile {
         position: relative;
-        background-color: var(--bg-color1);
 
         &::before {
             position: absolute;
@@ -24,8 +23,42 @@ $g2: rgb(236, 64, 122);
         }
 
         &.active {
-            animation: bright 1s forwards;
+            opacity: 1;
+            animation: hide .2s forwards;
             animation-delay: var(--delay);
+        }
+
+        &.inactive {
+            opacity: 0;
+            animation: show .2s forwards;
+            animation-delay: var(--delay);
+        }
+    }
+
+    .center-div {
+        position: absolute;
+        height: 100vh;
+        width: 100vw;
+        display: inherit;
+
+        .headline {
+            margin: auto;
+            font-size: 5em;
+            background-color: rgba(20, 20, 20, 0.2);
+            padding: .25em .5em;
+            border-radius: .25em;
+
+            &.active {
+                opacity: 1;
+                animation: hide 2s forwards;
+                // animation-delay: 1s;
+            }
+
+            &.inactive {
+                opacity: 0;
+                animation: show 2s forwards;
+                // animation-delay: 1s;
+            }
         }
     }
 }
@@ -40,24 +73,22 @@ $g2: rgb(236, 64, 122);
     }
 }
 
-@keyframes bright {
+@keyframes hide {
     0% {
-        background-color: var(--bg-color1);
-        opacity: 0;
-    }
-
-    40% {
-        background-color: var(--bg-color2);
-        opacity: 1;
-    }
-
-    60% {
-        background-color: var(--bg-color2);
         opacity: 1;
     }
 
     100% {
-        background-color: var(--bg-color2);
+        opacity: 0;
+    }
+}
+
+@keyframes show {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
         opacity: 1;
     }
 }

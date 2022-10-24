@@ -8,7 +8,7 @@
     grid-template-rows: repeat(var(--rows), 1fr);
 
     .tile {
-        background-color: var(--bg-color1);
+        background-color: var(--bg-color-1);
 
         &.active {
             animation: bright .3s forwards;
@@ -19,18 +19,18 @@
 
 @keyframes bright {
     0% {
-        background-color: var(--bg-color1);
+        background-color: var(--bg-color-1);
     }
 
     50% {
 
-        background-color: var(--bg-color2);
+        background-color: var(--bg-color-2);
         filter: brightness(130%);
         outline: 1px solid white;
     }
 
     100% {
 
-        background-color: var(--bg-color2);
+        background-color: var(--bg-color-2);
     }
 }

@@ -56,13 +56,12 @@ function Homepage() {
                 const xDiff = (x: number) => (x - posX) / 20
                 const yDiff = (y: number) => (y - posY) / 20
                 const pos = (x: number, y: number) => Math.sqrt(xDiff(x) * xDiff(x) + yDiff(y) * yDiff(y))
-                const warst = [pos(0, 0), pos(params.columns, 0), pos(0, params.rows), pos(params.columns, params.rows)]
-                // console.log(warst, params)
+                const diagonals = [pos(0, 0), pos(params.columns, 0), pos(0, params.rows), pos(params.columns, params.rows)]
 
                 setTimeout(() => {
                     setActve(false)
                     setCount(e => e + 1)
-                }, Math.max(...warst) * 1000 + 300)
+                }, Math.max(...diagonals) * 1000 + 300)
             }
 
             return (
@@ -76,7 +75,7 @@ function Homepage() {
         }
 
         return (
-            <div id='tiles' style={{ '--columns': params.columns, '--rows': params.rows, '--bg-color1': colors[count % (colors.length - 1)], '--bg-color2': colors[(count + 1) % (colors.length - 1)] } as CSSProperties}>
+            <div id='tiles' style={{ '--columns': params.columns, '--rows': params.rows, '--bg-color-1': colors[count % colors.length], '--bg-color-2': colors[(count + 1) % colors.length] } as CSSProperties}>
                 {Array.from(Array(params.quantity)).map((_tile, index) => createTile(index))}
             </div>
         )
