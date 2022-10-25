@@ -84,7 +84,7 @@ function Homepage2() {
                 {Array.from(Array(params.quantity)).map((_tile, index) => createTile(index))}
             </div >
         )
-    }, [params, position, active, action])
+    }, [params, position, active, action, count])
 
     return createTiles
 }
