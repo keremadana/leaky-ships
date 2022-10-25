@@ -1,6 +1,7 @@
 // import Gamefield from './components/Gamefield';
 // import Homepage from './components/Homepage';
-import Homepage2 from './components/Homepage2';
+// import Homepage2 from './components/Homepage2';
+import SocketIO from './components/SocketIO';
 import './styles/App.scss';
 
 function App() {
@@ -11,7 +12,8 @@ function App() {
       <header className="App-header">
         {/* <Gamefield/> */}
         {/* <Homepage/> */}
-        <Homepage2/>
+        {/* <Homepage2/> */}
+        <SocketIO/>
       </header>
     </div>
   );
