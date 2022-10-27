@@ -167,20 +167,23 @@
     border: 2px solid yellowgreen;
   }
 
-  .fog-left {
-    grid-area: 1 / 1 / -1 / -1;
-    align-self: flex-start;
+  .fog {
     width: inherit;
-    transform: rotate(180deg);
-  }
-  .fog-right {
-    grid-area: 1 / 1 / -1 / -1;
-    align-self: flex-end;
-    width: inherit;
-  }
-  .fog-middle {
-    grid-area: 4 / 4 / -4 / -4;
-    // align-self: flex-end;
-    width: inherit;
+    pointer-events: none;
+
+    &.left {
+      grid-area: 1 / 1 / -1 / -1;
+      align-self: flex-start;
+      transform: rotate(180deg);
+    }
+
+    &.right {
+      grid-area: 1 / 1 / -1 / -1;
+      align-self: flex-end;
+    }
+
+    &.middle {
+      grid-area: 4 / 4 / -4 / -4;
+    }
   }
 }

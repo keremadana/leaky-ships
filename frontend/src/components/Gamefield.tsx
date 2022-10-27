@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CSSProperties, useEffect, useReducer, useState } from 'react';
 import Bluetooth from './Bluetooth';
 import BorderTiles from './BorderTiles';
-import FogImages from './FogImages';
+// import FogImages from './FogImages';
 import HitElems from './HitElems';
 import Labeling from './Labeling';
 import Ships from './Ships';
@@ -100,7 +100,7 @@ function Gamefield() {
                 <HitElems hits={hits} />
 
                 {/* Fog images */}
-                <FogImages />
+                {/* <FogImages /> */}
                 <div className={`hit-svg target ${target.show ? 'show' : ''}`} style={{ '--x': target.x, '--y': target.y } as CSSProperties}>
                     <FontAwesomeIcon icon={faCrosshairs} />
                 </div>
