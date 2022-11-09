@@ -187,3 +187,10 @@
     }
   }
 }
+
+.inputt {
+  background-color: #61dafb;
+  &:hover {
+    background-color: red;
+  }
+}
