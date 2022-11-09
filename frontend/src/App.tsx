@@ -2,7 +2,8 @@
 // import Homepage from './components/Homepage';
 // import Homepage2 from './components/Homepage2';
 // import SocketIO from './components/SocketIO';
-import Upload from './components/Upload';
+// import Upload from './components/Upload';
+import MyDropzone from './components/MyDropzone';
 import './styles/App.scss';
 
 function App() {
@@ -15,7 +16,8 @@ function App() {
         {/* <Homepage/> */}
         {/* <Homepage2/> */}
         {/* <SocketIO/> */}
-        <Upload />
+        {/* <Upload /> */}
+        <MyDropzone />
       </header>
     </div>
   );
