@@ -51,3 +51,17 @@ export const initlialTargetPreview = {
     y: 0
 };
 export const isHit = (hits: HitType[], x: number, y: number) => hits.filter(h => h.x === x && h.y === y);
+export function readFile(file: File): Promise<string> {
+    return new Promise((resolve) => {
+        const reader = new FileReader()
+        reader.onload = async (e) => {
+            if (!e.target)
+                return
+            const text = (e.target.result)
+            if (typeof text !== 'string')
+                return
+            resolve(text)
+        };
+        reader.readAsText(file)
+    })
+}
