@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { CSSProperties } from 'react'
 
 function Ships() {
@@ -10,7 +11,7 @@ function Ships() {
     return <>
         {shipIndexes.map(i =>
             <div key={i} className={`ship s${i}`} style={{'--x': i+3} as CSSProperties}>
-                <img src={`/svgs/${i}.svg`} alt={`${i}.svg`}/>
+                <Image src={`/svgs/${i}.svg`} alt={`${i}.svg`}/>
             </div>
         )}
     </>
