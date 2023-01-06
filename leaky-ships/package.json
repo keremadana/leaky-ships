@@ -9,6 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-regular-svg-icons": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@next/font": "13.1.1",
     "@types/node": "18.11.18",
     "@types/react": "18.0.26",
@@ -18,6 +22,11 @@
     "next": "13.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "socket.io-client": "^4.5.4",
     "typescript": "4.9.4"
+  },
+  "devDependencies": {
+    "@types/web-bluetooth": "^0.0.16",
+    "sass": "^1.57.1"
   }
 }
