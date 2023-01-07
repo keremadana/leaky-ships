@@ -52,7 +52,7 @@ body {
 #game-frame {
   // border: 1px solid orange;
   // position: relative;
-  $height: 945px;
+  $height: 864px;
   $width: $height;
   height: $height;
   width: $width;
@@ -113,31 +113,15 @@ body {
       // object-fit: cover;
     }
 
-    &.s1 {
-      grid-column: 3 / 7;
-    }
-
     &.s2 {
       grid-column: 3 / 5;
     }
 
     &.s3 {
       grid-column: 3 / 6;
-
-      img {
-        margin-top: -2%;
-      }
     }
 
     &.s4 {
-      grid-column: 3 / 6;
-    }
-
-    &.s5 {
-      grid-column: 3 / 6;
-    }
-
-    &.s6 {
       grid-column: 3 / 7;
     }
   }
@@ -174,6 +158,11 @@ body {
     &.target {
       color: red;
       opacity: 0;
+
+      img {
+        height: inherit;
+        width: inherit;
+      }
     }
 
     &.target-preview {
@@ -181,6 +170,11 @@ body {
       opacity: 0;
       @include transition(.2s);
 
+      img {
+        height: inherit;
+        width: inherit;
+        filter: sepia() saturate(2000%) hue-rotate(20deg)
+      }
     }
 
     &.show {

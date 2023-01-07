@@ -1,5 +1,3 @@
-import { faCrosshairs } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CSSProperties, useEffect, useReducer, useState } from 'react';
 import Bluetooth from './Bluetooth';
 import BorderTiles from './BorderTiles';
@@ -21,13 +19,14 @@ function Gamefield() {
     useEffect(() => {
         const { newX, newY, shouldShow, appearOK, eventReady, show, x, y } = targetPreview;
         const positionChange = !(x === newX && y === newY);
+        const alreadyTargeting = target.show && target.x === targetPreview.newX && target.y === targetPreview.newY
         // if not ready or no new position
         if (!eventReady || (!positionChange && show))
             return;
         if (show) {
             // hide preview to change position when hidden
             setTargetPreview(e => ({ ...e, appearOK: false, eventReady: false, show: false }));
-        } else if (shouldShow && appearOK && !isHit(hits, newX, newY).length) {
+        } else if (shouldShow && appearOK && !isHit(hits, newX, newY).length && !alreadyTargeting) {
             // BUT only appear again if it's supposed to (in case the mouse left over the edge) and ()
             setTargetPreview(e => ({ ...e, appearOK: false, eventReady: false, show: true, x: newX, y: newY }));
         }
@@ -102,10 +101,10 @@ function Gamefield() {
                 {/* Fog images */}
                 {/* <FogImages /> */}
                 <div className={`hit-svg target ${target.show ? 'show' : ''}`} style={{ '--x': target.x, '--y': target.y } as CSSProperties}>
-                    <FontAwesomeIcon icon={faCrosshairs} />
+                    <img src='/assets/scope.png' alt='Crosshair' />
                 </div>
-                <div className={`hit-svg target-preview ${targetPreview.show && (target.x !== targetPreview.x || target.y !== targetPreview.y) ? 'show' : ''}`} style={{ '--x': targetPreview.x, '--y': targetPreview.y } as CSSProperties}>
-                    <FontAwesomeIcon icon={faCrosshairs} />
+                <div className={`hit-svg target-preview ${targetPreview.show ? 'show' : ''}`} style={{ '--x': targetPreview.x, '--y': targetPreview.y } as CSSProperties}>
+                    <img src='/assets/scope.png' alt='Crosshair' />
                 </div>
             </div>
             {/* <p>
