@@ -37,8 +37,8 @@ export const hitReducer = (formObject: HitType[], action: HitDispatchType) => {
 }
 export const initlialTarget = {
     show: false,
-    x: 0,
-    y: 0
+    x: 2,
+    y: 2
 };
 export const initlialTargetPreview = {
     newX: 0,
@@ -47,7 +47,7 @@ export const initlialTargetPreview = {
     appearOK: false,
     eventReady: true,
     show: false,
-    x: 0,
-    y: 0
+    x: 2,
+    y: 2
 };
 export const isHit = (hits: HitType[], x: number, y: number) => hits.filter(h => h.x === x && h.y === y);
