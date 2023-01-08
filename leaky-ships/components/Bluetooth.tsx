@@ -127,7 +127,7 @@ function Bluetooth() {
     }
 
     return (
-        <>
+        <div>
             <button
                 id="read"
                 className="bluetooth"
@@ -145,7 +145,29 @@ function Bluetooth() {
                 disabled={stopDisabled}
                 onClick={stop}
             >Stop</button>
-        </>
+            <p>
+                <span
+                    className="App-link"
+                    onClick={() => { navigator.clipboard.writeText("chrome://flags/#enable-experimental-web-platform-features") }}
+                    // target="_blank"
+                    style={{ "cursor": "pointer" }}
+                // rel="noopener noreferrer"
+                >
+                    Step 1
+                </span>
+                {" "}
+                <span
+                    className="App-link"
+                    onClick={() => { navigator.clipboard.writeText("chrome://flags/#enable-web-bluetooth-new-permissions-backend") }}
+                    // target="_blank"
+                    style={{ "cursor": "pointer" }}
+                // rel="noopener noreferrer"
+
+                >
+                    Step 2
+                </span>
+            </p>
+        </div>
     )
 
 }

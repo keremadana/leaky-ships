@@ -1,5 +1,7 @@
+import { faCrosshairs } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CSSProperties, useEffect, useReducer, useState } from 'react';
-import Bluetooth from './Bluetooth';
+// import Bluetooth from './Bluetooth';
 import BorderTiles from './BorderTiles';
 // import FogImages from './FogImages';
 import HitElems from './HitElems';
@@ -7,8 +9,17 @@ import Labeling from './Labeling';
 import Ships from './Ships';
 import { hitReducer, initlialTarget, initlialTargetPreview, isHit } from '../helpers';
 import { HitType, TargetPreviewType, TargetType } from '../interfaces';
+import Item from './Item';
 
 function Gamefield() {
+
+    const items = [
+        { icon: 'burger-menu', text: 'Menu', cllFn: () => { } },
+        { icon: 'radar', text: 'Radar scan', cllFn: () => { } },
+        { icon: 'missle', text: 'Fire torpedo', cllFn: () => { } },
+        { icon: 'scope', text: 'Fire missle', cllFn: () => { } },
+        { icon: 'gear', text: 'Settings', cllFn: () => { } }
+    ]
 
     const count = 12;
     const [target, setTarget] = useState<TargetType>(initlialTarget);
@@ -63,29 +74,7 @@ function Gamefield() {
 
     return (
         <div id='gamefield'>
-            <Bluetooth />
-            <p>
-                <span
-                    className="App-link"
-                    onClick={() => { navigator.clipboard.writeText("chrome://flags/#enable-experimental-web-platform-features") }}
-                    // target="_blank"
-                    style={{ "cursor": "pointer" }}
-                // rel="noopener noreferrer"
-                >
-                    Step 1
-                </span>
-                {" "}
-                <span
-                    className="App-link"
-                    onClick={() => { navigator.clipboard.writeText("chrome://flags/#enable-web-bluetooth-new-permissions-backend") }}
-                    // target="_blank"
-                    style={{ "cursor": "pointer" }}
-                // rel="noopener noreferrer"
-
-                >
-                    Step 2
-                </span>
-            </p>
+            {/* <Bluetooth /> */}
             <div id="game-frame" style={{ '--i': count } as CSSProperties}>
                 {/* Bordes */}
                 <BorderTiles count={count} actions={{ setTarget, setTargetPreview, hits, DispatchHits }} />
@@ -101,23 +90,17 @@ function Gamefield() {
                 {/* Fog images */}
                 {/* <FogImages /> */}
                 <div className={`hit-svg target ${target.show ? 'show' : ''}`} style={{ '--x': target.x, '--y': target.y } as CSSProperties}>
-                    <img src='/assets/scope.png' alt='Crosshair' />
+                    <FontAwesomeIcon icon={faCrosshairs} />
                 </div>
                 <div className={`hit-svg target-preview ${targetPreview.show ? 'show' : ''}`} style={{ '--x': targetPreview.x, '--y': targetPreview.y } as CSSProperties}>
-                    <img src='/assets/scope.png' alt='Crosshair' />
+                    <FontAwesomeIcon icon={faCrosshairs} />
                 </div>
             </div>
-            {/* <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p> */}
-            <a
-                className="App-link"
-                href="https://www.freepik.com/free-vector/militaristic-ships-set-navy-ammunition-warship-submarine-nuclear-battleship-float-cruiser-trawler-gunboat-frigate-ferry_10704121.htm"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                <p>Battleships designed by macrovector</p>
-            </a>
+            <div className='event-bar'>
+                {items.map(e => (
+                    <Item props={e} />
+                ))}
+            </div>
         </div>
     )
 }

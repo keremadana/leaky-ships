@@ -35,6 +35,7 @@ function BorderTiles({ count, actions: { setTarget, setTargetPreview, hits, Disp
                 onClick={() => {
                     if (!isGameTile && !isHit(hits, x, y).length)
                         return;
+                    setTargetPreview(e => ({ ...e, shouldShow: false, show: false }))
                     setTarget(t => {
                         if (t.x === x && t.y === y) {
                             DispatchHits({ type: 'fireMissle', payload: { hit: (x + y) % 2 !== 0, x, y } });

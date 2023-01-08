@@ -51,3 +51,11 @@
         left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
     }
 }
+
+// Pixelart sharpness (no interpolation)
+// https://css-tricks.com/keep-pixelated-images-pixelated-as-they-scale/
+@mixin pixelart {
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+}

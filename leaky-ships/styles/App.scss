@@ -28,9 +28,9 @@ body {
 .App-header {
   background-color: $theme;
   min-height: 100vh;
-  @include flex-col;
-  align-items: center;
-  justify-content: center;
+  // @include flex-col;
+  // align-items: center;
+  // justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
 }
@@ -49,10 +49,18 @@ body {
   }
 }
 
+#gamefield {
+  @include flex-col;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 100vh;
+}
+
 #game-frame {
   // border: 1px solid orange;
   // position: relative;
-  $height: 864px;
+  // $height: 864px;
+  $height: 648px;
   $width: $height;
   height: $height;
   width: $width;
@@ -107,6 +115,7 @@ body {
     pointer-events: none;
 
     img {
+      @include pixelart;
       position: absolute;
       // height: 90%;
       width: 90%;
@@ -158,23 +167,12 @@ body {
     &.target {
       color: red;
       opacity: 0;
-
-      img {
-        height: inherit;
-        width: inherit;
-      }
     }
 
     &.target-preview {
       color: orange;
       opacity: 0;
       @include transition(.2s);
-
-      img {
-        height: inherit;
-        width: inherit;
-        filter: sepia() saturate(2000%) hue-rotate(20deg)
-      }
     }
 
     &.show {
@@ -207,6 +205,34 @@ body {
 
     &.middle {
       grid-area: 4 / 4 / -4 / -4;
+    }
+  }
+}
+
+.event-bar {
+  @include flex-row;
+  padding: 1rem 3rem;
+  background-color: #fff9;
+  border-radius: 1rem;
+
+  .item {
+    @include flex-col;
+    align-items: center;
+    gap: .5rem;
+    width: 128px;
+
+    img {
+      width: 64px;
+      padding: 8px;
+      @include pixelart;
+      background-color: white;
+      border-radius: 1rem;
+    }
+
+    span {
+      color: black;
+      font-size: .75em;
+      font-weight: bold;
     }
   }
 }
