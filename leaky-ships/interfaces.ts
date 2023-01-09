@@ -1,18 +1,22 @@
+export interface LastLeftTileType {
+    x: number,
+    y: number
+}
 export interface TargetType {
     show: boolean,
     x: number,
     y: number
 };
 export interface TargetPreviewType {
-    newX: number,
-    newY: number,
-    shouldShow: boolean,
-    appearOK: boolean,
-    eventReady: boolean,
     show: boolean,
     x: number,
     y: number
 };
+export interface TargetPreviewPosType {
+    shouldShow: boolean,
+    x: number,
+    y: number
+}
 export interface FieldType {
     field: string,
     x: number,

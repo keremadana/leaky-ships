@@ -28,9 +28,6 @@ body {
 .App-header {
   background-color: $theme;
   min-height: 100vh;
-  // @include flex-col;
-  // align-items: center;
-  // justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
 }
@@ -57,8 +54,6 @@ body {
 }
 
 #game-frame {
-  // border: 1px solid orange;
-  // position: relative;
   // $height: 864px;
   $height: 648px;
   $width: $height;
@@ -71,7 +66,6 @@ body {
   justify-items: center;
   grid-template-rows: .75fr repeat(12, 1fr) .75fr;
   grid-template-columns: .75fr repeat(12, 1fr) .75fr;
-  // grid-gap: 1px solid blue;
 
   >.label {
     grid-column: var(--x);
@@ -95,7 +89,6 @@ body {
 
   > :not(.border) {
     box-sizing: border-box;
-    // border: 1px solid red;
   }
 
   >span {
@@ -109,8 +102,6 @@ body {
     position: relative;
     @include flex-col;
     align-items: center;
-    // justify-content: center;
-    border: 1px solid yellow;
     grid-row: var(--x);
     pointer-events: none;
 
@@ -172,7 +163,7 @@ body {
     &.target-preview {
       color: orange;
       opacity: 0;
-      @include transition(.2s);
+      @include transition(.5s);
     }
 
     &.show {

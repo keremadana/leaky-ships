@@ -35,19 +35,23 @@ export const hitReducer = (formObject: HitType[], action: HitDispatchType) => {
         return formObject;
     }
 }
+export const initlialLastLeftTile = {
+    x: 0,
+    y: 0
+};
 export const initlialTarget = {
     show: false,
     x: 2,
     y: 2
 };
 export const initlialTargetPreview = {
-    newX: 0,
-    newY: 0,
-    shouldShow: false,
-    appearOK: false,
-    eventReady: true,
     show: false,
     x: 2,
     y: 2
+};
+export const initlialTargetPreviewPos = {
+    shouldShow: false,
+    x: 0,
+    y: 0
 };
 export const isHit = (hits: HitType[], x: number, y: number) => hits.filter(h => h.x === x && h.y === y);

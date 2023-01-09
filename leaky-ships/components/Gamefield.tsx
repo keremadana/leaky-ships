@@ -7,8 +7,8 @@ import BorderTiles from './BorderTiles';
 import HitElems from './HitElems';
 import Labeling from './Labeling';
 import Ships from './Ships';
-import { hitReducer, initlialTarget, initlialTargetPreview, isHit } from '../helpers';
-import { HitType, TargetPreviewType, TargetType } from '../interfaces';
+import { hitReducer, initlialLastLeftTile, initlialTarget, initlialTargetPreview, initlialTargetPreviewPos, isHit } from '../helpers';
+import { HitType, LastLeftTileType, TargetPreviewPosType, TargetPreviewType, TargetType } from '../interfaces';
 import Item from './Item';
 
 function Gamefield() {
@@ -22,62 +22,65 @@ function Gamefield() {
     ]
 
     const count = 12;
+    const [lastLeftTile, setLastLeftTile] = useState<LastLeftTileType>(initlialLastLeftTile);
     const [target, setTarget] = useState<TargetType>(initlialTarget);
+    const [eventReady, setEventReady] = useState(false);
+    const [appearOK, setAppearOK] = useState(false);
     const [targetPreview, setTargetPreview] = useState<TargetPreviewType>(initlialTargetPreview);
+    const [targetPreviewPos, setTargetPreviewPos] = useState<TargetPreviewPosType>(initlialTargetPreviewPos);
     const [hits, DispatchHits] = useReducer(hitReducer, [] as HitType[]);
 
     // handle visibility and position change of targetPreview
     useEffect(() => {
-        const { newX, newY, shouldShow, appearOK, eventReady, show, x, y } = targetPreview;
-        const positionChange = !(x === newX && y === newY);
-        const alreadyTargeting = target.show && target.x === targetPreview.newX && target.y === targetPreview.newY
-        // if not ready or no new position
-        if (!eventReady || (!positionChange && show))
-            return;
-        if (show) {
-            // hide preview to change position when hidden
-            setTargetPreview(e => ({ ...e, appearOK: false, eventReady: false, show: false }));
-        } else if (shouldShow && appearOK && !isHit(hits, newX, newY).length && !alreadyTargeting) {
-            // BUT only appear again if it's supposed to (in case the mouse left over the edge) and ()
-            setTargetPreview(e => ({ ...e, appearOK: false, eventReady: false, show: true, x: newX, y: newY }));
-        }
-    }, [targetPreview, hits])
+        const { show, x, y } = targetPreview;
+        const { shouldShow } = targetPreviewPos;
+        // if mouse has moved too quickly and last event was entering and leaving the same field, it must have gone outside the grid
+        const hasLeft = x === lastLeftTile.x && y === lastLeftTile.y
+        const isSet = x === target.x && y === target.y
+
+        if (show && !appearOK)
+            setTargetPreview(e => ({ ...e, show: false }));
+        if (!show && shouldShow && eventReady && appearOK && !isHit(hits, x, y).length && !hasLeft && !isSet)
+            setTargetPreview(e => ({ ...e, show: true }));
+    }, [targetPreview, hits, eventReady, appearOK, lastLeftTile])
 
     // enable targetPreview event again after 200 mil. sec.
     useEffect(() => {
-        if (targetPreview.eventReady)
+        const { x: newX, y: newY } = targetPreviewPos;
+        setEventReady(false);
+        if (targetPreview.show || !appearOK)
             return;
         const autoTimeout = setTimeout(() => {
-            setTargetPreview(e => ({ ...e, eventReady: true }));
-        }, 200);
+            setTargetPreview(e => ({ ...e, x: newX, y: newY }));
+            setEventReady(true);
+            setAppearOK(true);
+        }, 250);
 
         // or abort if state has changed early
         return () => {
             clearTimeout(autoTimeout);
         }
-    }, [targetPreview.eventReady]);
+    }, [targetPreviewPos, targetPreview.show, appearOK]);
 
     // approve targetPreview new position after 200 mil. sec.
     useEffect(() => {
         // early return to start cooldown only when about to show up
-        if (!targetPreview.shouldShow)
-            return;
         const autoTimeout = setTimeout(() => {
-            setTargetPreview(e => ({ ...e, appearOK: true }));
-        }, 350);
+            setAppearOK(!targetPreview.show)
+        }, targetPreview.show ? 500 : 100);
 
         // or abort if movement is repeated early
         return () => {
             clearTimeout(autoTimeout);
         }
-    }, [targetPreview.shouldShow, targetPreview.newX, targetPreview.newY]);
+    }, [targetPreview.show]);
 
     return (
         <div id='gamefield'>
             {/* <Bluetooth /> */}
             <div id="game-frame" style={{ '--i': count } as CSSProperties}>
                 {/* Bordes */}
-                <BorderTiles count={count} actions={{ setTarget, setTargetPreview, hits, DispatchHits }} />
+                <BorderTiles props={{ count, setTarget, setTargetPreviewPos, hits, DispatchHits, setLastLeftTile }} />
 
                 {/* Collumn lettes and row numbers */}
                 <Labeling count={count} />
@@ -89,16 +92,16 @@ function Gamefield() {
 
                 {/* Fog images */}
                 {/* <FogImages /> */}
-                <div className={`hit-svg target ${target.show ? 'show' : ''}`} style={{ '--x': target.x, '--y': target.y } as CSSProperties}>
+                <div className={`hit-svg target-preview ${targetPreview.show ? 'show' : ''}`} style={{ '--x': targetPreview.x, '--y': targetPreview.y } as CSSProperties}>
                     <FontAwesomeIcon icon={faCrosshairs} />
                 </div>
-                <div className={`hit-svg target-preview ${targetPreview.show ? 'show' : ''}`} style={{ '--x': targetPreview.x, '--y': targetPreview.y } as CSSProperties}>
+                <div className={`hit-svg target ${target.show ? 'show' : ''}`} style={{ '--x': target.x, '--y': target.y } as CSSProperties}>
                     <FontAwesomeIcon icon={faCrosshairs} />
                 </div>
             </div>
             <div className='event-bar'>
-                {items.map(e => (
-                    <Item props={e} />
+                {items.map((e, i) => (
+                    <Item key={i} props={e} />
                 ))}
             </div>
         </div>
