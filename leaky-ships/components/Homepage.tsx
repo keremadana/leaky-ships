@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { CSSProperties, useEffect, useMemo, useState } from 'react'
 
 function Homepage() {
@@ -66,7 +67,7 @@ function Homepage() {
             return (
                 <div
                     key={index}
-                    className={'tile ' + (active ? 'active' : '')}
+                    className={classNames('tile', { active: active })}
                     style={{ '--delay': pos + 's' } as CSSProperties}
                     onClick={() => doEffect(x, y)}
                 ></div>

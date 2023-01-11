@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { CSSProperties } from 'react'
 
 function Ships() {
@@ -14,7 +15,7 @@ function Ships() {
         {shipIndexes.map(({ size, index }, i) => {
             const filename = `/assets/ship_blue_${size}x${index ? '_' + index : ''}.gif`
             return (
-                <div key={i} className={`ship s${size}`} style={{ '--x': i + 3 } as CSSProperties}>
+                <div key={i} className={classNames('ship', size)} style={{ '--x': i + 3 } as CSSProperties}>
                     <img src={filename} alt={filename} />
                 </div>
             )

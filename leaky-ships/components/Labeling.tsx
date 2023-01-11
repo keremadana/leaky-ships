@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { CSSProperties } from 'react'
 import { fieldIndex } from '../helpers';
 import { FieldType } from '../interfaces';
@@ -21,7 +22,7 @@ function Labeling({count}: {count: number}) {
     elems = elems.sort((a, b) => fieldIndex(count, a.x, a.y)-fieldIndex(count, b.x, b.y));
     return <>
         {elems.map(({field, x, y, orientation}, i) =>
-            <span key={i} className={`label ${orientation} ${field}`} style={{'--x': x, '--y': y} as CSSProperties}>{field}</span>
+            <span key={i} className={classNames('label', orientation, field)} style={{'--x': x, '--y': y} as CSSProperties}>{field}</span>
         )}
     </>
 }

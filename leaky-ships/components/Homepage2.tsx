@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { CSSProperties, useEffect, useMemo, useState } from 'react'
 
 function Homepage2() {
@@ -68,7 +69,7 @@ function Homepage2() {
             return (
                 <div
                     key={index}
-                    className={'tile ' + (active ? 'active' : 'inactive')}
+                    className={classNames('tile', (active ? 'active' : 'inactive'))}
                     style={{ '--delay': pos + 's' } as CSSProperties}
                     onClick={() => doEffect(x, y)}
                 ></div>
@@ -78,7 +79,7 @@ function Homepage2() {
         return (
             <div id='tiles' style={{ '--columns': params.columns, '--rows': params.rows } as CSSProperties}>
                 <div className="center-div">
-                    <h1 className={'headline ' + (!active ? 'active' : 'inactive')}>{sentences[count % sentences.length]}</h1>
+                    <h1 className={classNames('headline', (!active ? 'active' : 'inactive'))}>{sentences[count % sentences.length]}</h1>
                 </div>
                 {Array.from(Array(params.quantity)).map((_tile, index) => createTile(index))}
             </div >
