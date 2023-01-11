@@ -154,20 +154,54 @@ body {
         color: red;
       }
     }
-
+    
     &.target {
-      color: red;
+      --color: red;
+      color: var(--color);
       opacity: 0;
     }
 
     &.target-preview {
-      color: orange;
+      --color: orange;
+      color: var(--color);
       opacity: 0;
       @include transition(.5s);
     }
 
     &.show {
       opacity: 1;
+    }
+
+    &.left {
+      border-left: 2px solid var(--color);
+    }
+
+    &.right {
+      border-right: 2px solid var(--color);
+    }
+
+    &.top {
+      border-top: 2px solid var(--color);
+    }
+
+    &.bottom {
+      border-bottom: 2px solid var(--color);
+    }
+
+    &.left.top {
+      border-top-left-radius: 8px;
+    }
+
+    &.right.top {
+      border-top-right-radius: 8px;
+    }
+
+    &.left.bottom {
+      border-bottom-left-radius: 8px;
+    }
+
+    &.right.bottom {
+      border-bottom-right-radius: 8px;
     }
   }
 

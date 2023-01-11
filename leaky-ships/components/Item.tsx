@@ -1,14 +1,14 @@
 import React from 'react'
 
-function Item({ props: { icon, text, cllFn } }: {
+function Item({ props: { icon, text, callback } }: {
     props: {
         icon: string,
         text: string,
-        cllFn: () => void,
+        callback: () => void
     }
 }) {
     return (
-        <div className='item' onClick={cllFn}>
+        <div className='item' onClick={callback}>
             <img src={`/assets/${icon}.png`} alt={`${icon}.png`} />
             <span>{text}</span>
         </div>

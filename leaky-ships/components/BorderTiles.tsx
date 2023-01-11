@@ -46,7 +46,7 @@ function BorderTiles({ props: { count, setTarget, setTargetPreviewPos, hits, Dis
                         return;
                     setTargetPreviewPos(e => ({ ...e, shouldShow: false }))
                     setTarget(t => {
-                        if (t.x === x && t.y === y) {
+                        if (t.x === x && t.y === y && t.show) {
                             DispatchHits({ type: 'fireMissle', payload: { hit: (x + y) % 2 !== 0, x, y } });
                             return { show: false, x, y };
                         } else {

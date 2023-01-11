@@ -1,12 +1,11 @@
+import { CSSProperties } from 'react';
 // import Bluetooth from './Bluetooth';
 import BorderTiles from './BorderTiles';
 // import FogImages from './FogImages';
 import HitElems from './HitElems';
 import Labeling from './Labeling';
 import Ships from './Ships';
-import Item from './Item';
 import useGameEvent from './useGameEvent';
-import { CSSProperties } from 'react';
 
 function Gamefield() {
 
@@ -19,7 +18,7 @@ function Gamefield() {
         setTargetPreviewPos,
         hits,
         DispatchHits
-    } = useGameEvent();
+    } = useGameEvent(count);
 
     return (
         <div id='gamefield'>

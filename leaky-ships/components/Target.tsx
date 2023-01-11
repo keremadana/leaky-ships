@@ -1,10 +1,11 @@
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CSSProperties } from 'react';
+import classNames from 'classnames';
 
-function Target({ preview, target: { x, y, show } }: { preview?: boolean, target: { x: number, y: number, show: boolean } }) {
+function Target({ props: { preview, type, edges }, target: { x, y, show } }: { props: { preview?: boolean, type: string, edges: string[] }, target: { x: number, y: number, show: boolean } }) {
     return (
-        <div className={`hit-svg target${preview ? '-preview' : ''} ${show ? 'show' : ''}`} style={{ '--x': x, '--y': y } as CSSProperties}>
+        <div className={classNames('hit-svg', preview ? 'target-preview' : 'target', type, { show: show }, ...edges)} style={{ '--x': x, '--y': y } as CSSProperties}>
             <FontAwesomeIcon icon={faCrosshairs} />
         </div>
     )
