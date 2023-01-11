@@ -71,7 +71,7 @@ function useGameEvent(count: number) {
     const Targets = useCallback((targets: { show: boolean, x: number, y: number, edges: string[] }[], preview?: boolean) => {
         const { type } = scopeGrid
         return targets.map(({ edges, ...target }, i) => <Target key={i} props={{ type, preview, edges }} target={target} />)
-    }, [scopeGrid, mode])
+    }, [scopeGrid])
 
     useEffect(() => {
         const { fields } = scopeGrid
