@@ -84,7 +84,12 @@ function useGameEvent(count: number) {
                     y > count,
                 ].reduce((prev, curr) => prev || curr, false)
                 // console.log(!isHit(hits, x, y).length, !borders)
-                return !isHit(hits, x, y).length && !border
+                return !border
+            }).map(field => {
+                const { x, y } = field
+                if (isHit(hits, x, y).length)
+                    return { ...field, edges: [...field.edges, 'imply'] }
+                return field
             })
         setTargetList(e => {
             if (JSON.stringify(e) === JSON.stringify(result))
@@ -104,14 +109,21 @@ function useGameEvent(count: number) {
                     y > count + 1,
                 ].reduce((prev, curr) => prev || curr, false)
                 // console.log(!isHit(hits, x, y).length, !isSet(x, y), !borders)
-                return !isHit(hits, x, y).length && !isSet(x, y) && !border
+                return !border
+            }).map(field => {
+                const { x, y } = field
+                if (isHit(hits, x, y).length || isSet(x, y))
+                    return { ...field, edges: [...field.edges, 'imply'] }
+                return field
             })
+        if (!targetPreviewPos.shouldShow)
+            return
         setTargetPreviewList(e => {
             if (JSON.stringify(e) === JSON.stringify(result))
                 return e
             return result
         })
-    }, [scopeGrid, targetPreview, count, hits, isSet]);
+    }, [scopeGrid, targetPreview, count, hits, isSet, targetPreviewPos.shouldShow]);
 
     // handle visibility and position change of targetPreview
     useEffect(() => {

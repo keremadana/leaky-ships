@@ -154,7 +154,7 @@ body {
         color: red;
       }
     }
-    
+
     &.target {
       --color: red;
       color: var(--color);
@@ -172,6 +172,10 @@ body {
       opacity: 1;
     }
 
+    &.imply>svg {
+      opacity: 0;
+    }
+
     &.left {
       border-left: 2px solid var(--color);
     }
@@ -186,6 +190,22 @@ body {
 
     &.bottom {
       border-bottom: 2px solid var(--color);
+    }
+
+    &.imply.left {
+      border-left: 2px dashed white;
+    }
+
+    &.imply.right {
+      border-right: 2px dashed white;
+    }
+
+    &.imply.top {
+      border-top: 2px dashed white;
+    }
+
+    &.imply.bottom {
+      border-bottom: 2px dashed white;
     }
 
     &.left.top {
