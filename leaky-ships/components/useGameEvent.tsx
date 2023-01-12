@@ -88,9 +88,10 @@ function useGameEvent(count: number) {
                 ].reduce((prev, curr) => prev || curr, false)
                 return !border
             }).map(field => {
-                const { x, y } = field.target
+                const { target, params } = field
+                const { x, y } = target
                 if (isHit(hits, x, y).length)
-                    return Object.assign(field, { imply: true })
+                    return Object.assign(field, Object.assign(params, { imply: true }))
                 return field
             })
         setTargetList(e => {
@@ -111,9 +112,10 @@ function useGameEvent(count: number) {
                 ].reduce((prev, curr) => prev || curr, false)
                 return !border
             }).map(field => {
-                const { x, y } = field.target
+                const { target, params } = field
+                const { x, y } = target
                 if (isHit(hits, x, y).length || isSet(x, y))
-                    return Object.assign(field, { imply: true })
+                    return Object.assign(field, Object.assign(params, { imply: true }))
                 return field
             })
         if (!targetPreviewPos.shouldShow)
