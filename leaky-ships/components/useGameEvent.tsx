@@ -14,16 +14,18 @@ function useGameEvent(count: number) {
     const [hits, DispatchHits] = useReducer(hitReducer, [] as HitType[]);
     const [mode, setMode] = useState<keyof typeof modes>('none')
     const [targetList, setTargetList] = useState<{
-        show: boolean;
-        x: number;
-        y: number;
-        edges: string[];
+        show: boolean,
+        x: number,
+        y: number,
+        edges: string[],
+        imply: boolean
     }[]>([])
     const [targetPreviewList, setTargetPreviewList] = useState<{
-        show: boolean;
-        x: number;
-        y: number;
-        edges: string[];
+        show: boolean,
+        x: number,
+        y: number,
+        edges: string[],
+        imply: boolean
     }[]>([])
 
     const modes = useMemo(() => ({
@@ -68,9 +70,9 @@ function useGameEvent(count: number) {
         return { fields, type }
     }, [modes, mode])
 
-    const Targets = useCallback((targets: { show: boolean, x: number, y: number, edges: string[] }[], preview?: boolean) => {
+    const Targets = useCallback((targets: { show: boolean, x: number, y: number, edges: string[], imply: boolean }[], preview?: boolean) => {
         const { type } = scopeGrid
-        return targets.map(({ edges, ...target }, i) => <Target key={i} props={{ type, preview, edges }} target={target} />)
+        return targets.map(({ edges, imply, ...target }, i) => <Target key={i} props={{ type, preview, edges, imply }} target={target} />)
     }, [scopeGrid])
 
     useEffect(() => {
@@ -83,13 +85,12 @@ function useGameEvent(count: number) {
                     y < 2,
                     y > count,
                 ].reduce((prev, curr) => prev || curr, false)
-                // console.log(!isHit(hits, x, y).length, !borders)
                 return !border
             }).map(field => {
                 const { x, y } = field
                 if (isHit(hits, x, y).length)
-                    return { ...field, edges: [...field.edges, 'imply'] }
-                return field
+                    return { ...field, imply: true }
+                return { ...field, imply: false }
             })
         setTargetList(e => {
             if (JSON.stringify(e) === JSON.stringify(result))
@@ -108,13 +109,12 @@ function useGameEvent(count: number) {
                     y < 2,
                     y > count + 1,
                 ].reduce((prev, curr) => prev || curr, false)
-                // console.log(!isHit(hits, x, y).length, !isSet(x, y), !borders)
                 return !border
             }).map(field => {
                 const { x, y } = field
                 if (isHit(hits, x, y).length || isSet(x, y))
-                    return { ...field, edges: [...field.edges, 'imply'] }
-                return field
+                    return { ...field, imply: true }
+                return { ...field, imply: false }
             })
         if (!targetPreviewPos.shouldShow)
             return
