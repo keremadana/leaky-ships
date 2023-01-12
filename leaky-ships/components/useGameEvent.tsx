@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { hitReducer, initlialLastLeftTile, initlialTarget, initlialTargetPreview, initlialTargetPreviewPos, isHit } from '../helpers';
-import { HitType, LastLeftTileType, TargetPreviewPosType, TargetPreviewType, TargetType } from '../interfaces';
+import { HitType, LastLeftTileType, TargetListType, TargetModifierType, TargetPreviewPosType, TargetPreviewType, TargetType } from '../interfaces';
 import Item from './Item';
 import Target from './Target';
 
@@ -13,20 +13,8 @@ function useGameEvent(count: number) {
     const [targetPreviewPos, setTargetPreviewPos] = useState<TargetPreviewPosType>(initlialTargetPreviewPos);
     const [hits, DispatchHits] = useReducer(hitReducer, [] as HitType[]);
     const [mode, setMode] = useState<keyof typeof modes>('none')
-    const [targetList, setTargetList] = useState<{
-        show: boolean,
-        x: number,
-        y: number,
-        edges: string[],
-        imply: boolean
-    }[]>([])
-    const [targetPreviewList, setTargetPreviewList] = useState<{
-        show: boolean,
-        x: number,
-        y: number,
-        edges: string[],
-        imply: boolean
-    }[]>([])
+    const [targetList, setTargetList] = useState<TargetListType[]>([])
+    const [targetPreviewList, setTargetPreviewList] = useState<TargetListType[]>([])
 
     const modes = useMemo(() => ({
         none: { xEnable: true, yEnable: true, type: 'none' },
@@ -36,15 +24,24 @@ function useGameEvent(count: number) {
         missle: { xEnable: false, yEnable: false, type: 'missle' }
     }), [])
 
-    function modXY<T>(e: { show: boolean, x: number, y: number }, mod: { x: number, y: number, edges: string[] }) {
-        return { show: e.show, x: e.x + (mod.x ?? 0), y: e.y + (mod.y ?? 0), edges: mod.edges }
+    function modXY<T>(e: TargetType, mod: TargetModifierType) {
+        const { show, ...pos } = e
+        const { target, params } = mod
+        return {
+            target: {
+                show,
+                x: pos.x + (target.x ?? 0),
+                y: pos.y + (target.y ?? 0)
+            },
+            params
+        }
     }
 
-    const isSet = useCallback((x: number, y: number) => targetList.filter(target => x === target.x && y === target.y).length && target.show, [targetList, target])
+    const isSet = useCallback((x: number, y: number) => targetList.filter(({ target }) => x === target.x && y === target.y).length && target.show, [targetList, target])
 
     const scopeGrid = useMemo(() => {
-        const { xEnable, yEnable, type } = modes[mode]
-        const matrix: { x: number, y: number, edges: string[] }[][] = []
+        const { xEnable, yEnable } = modes[mode]
+        const matrix: TargetModifierType[][] = []
         let y = 0
         let x = 0
         const yLength = (yEnable ? 2 : 0)
@@ -55,30 +52,34 @@ function useGameEvent(count: number) {
                 x = i2 + (xEnable ? -1 : 0);
 
                 (matrix[i] ??= [])[i2] = {
-                    x,
-                    y,
-                    edges: [
-                        i2 === 0 ? 'left' : '',
-                        i2 === xLength ? 'right' : '',
-                        i === 0 ? 'top' : '',
-                        i === yLength ? 'bottom' : '',
-                    ]
+                    target: {
+                        x,
+                        y,
+                    },
+                    params: {
+                        edges: [
+                            i2 === 0 ? 'left' : '',
+                            i2 === xLength ? 'right' : '',
+                            i === 0 ? 'top' : '',
+                            i === yLength ? 'bottom' : '',
+                        ],
+                        imply: false
+                    }
                 }
             }
         }
         const fields = matrix.reduce((prev, curr) => [...prev, ...curr], [])
-        return { fields, type }
+        return fields
     }, [modes, mode])
 
-    const Targets = useCallback((targets: { show: boolean, x: number, y: number, edges: string[], imply: boolean }[], preview?: boolean) => {
-        const { type } = scopeGrid
-        return targets.map(({ edges, imply, ...target }, i) => <Target key={i} props={{ type, preview, edges, imply }} target={target} />)
-    }, [scopeGrid])
+    const Targets = useCallback((targets: TargetListType[], preview?: boolean) => {
+        const { type } = modes[mode]
+        return targets.map(({ target, params }, i) => <Target key={i} props={{ type, preview, ...params }} target={target} />)
+    }, [modes, mode])
 
     useEffect(() => {
-        const { fields } = scopeGrid
-        const result = fields.map(e => modXY(target, e))
-            .filter(({ x, y }) => {
+        const result = scopeGrid.map(e => modXY(target, e))
+            .filter(({ target: { x, y } }) => {
                 const border = [
                     x < 2,
                     x > count,
@@ -87,10 +88,10 @@ function useGameEvent(count: number) {
                 ].reduce((prev, curr) => prev || curr, false)
                 return !border
             }).map(field => {
-                const { x, y } = field
+                const { x, y } = field.target
                 if (isHit(hits, x, y).length)
-                    return { ...field, imply: true }
-                return { ...field, imply: false }
+                    return Object.assign(field, { imply: true })
+                return field
             })
         setTargetList(e => {
             if (JSON.stringify(e) === JSON.stringify(result))
@@ -100,9 +101,8 @@ function useGameEvent(count: number) {
     }, [scopeGrid, target, count, hits]);
 
     useEffect(() => {
-        const { fields } = scopeGrid
-        const result = fields.map(e => modXY(targetPreview, e))
-            .filter(({ x, y }) => {
+        const result = scopeGrid.map(e => modXY(targetPreview, e))
+            .filter(({ target: { x, y } }) => {
                 const border = [
                     x < 2,
                     x > count + 1,
@@ -111,10 +111,10 @@ function useGameEvent(count: number) {
                 ].reduce((prev, curr) => prev || curr, false)
                 return !border
             }).map(field => {
-                const { x, y } = field
+                const { x, y } = field.target
                 if (isHit(hits, x, y).length || isSet(x, y))
-                    return { ...field, imply: true }
-                return { ...field, imply: false }
+                    return Object.assign(field, { imply: true })
+                return field
             })
         if (!targetPreviewPos.shouldShow)
             return
