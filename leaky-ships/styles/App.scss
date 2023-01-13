@@ -154,7 +154,7 @@ body {
         color: red;
       }
     }
-    
+
     &.target {
       --color: red;
       color: var(--color);
@@ -172,6 +172,10 @@ body {
       opacity: 1;
     }
 
+    &.imply>svg {
+      opacity: 0;
+    }
+
     &.left {
       border-left: 2px solid var(--color);
     }
@@ -186,6 +190,22 @@ body {
 
     &.bottom {
       border-bottom: 2px solid var(--color);
+    }
+
+    &.imply.left {
+      border-left: 2px dashed white;
+    }
+
+    &.imply.right {
+      border-right: 2px dashed white;
+    }
+
+    &.imply.top {
+      border-top: 2px dashed white;
+    }
+
+    &.imply.bottom {
+      border-bottom: 2px dashed white;
     }
 
     &.left.top {
@@ -246,12 +266,31 @@ body {
     gap: .5rem;
     width: 128px;
 
-    img {
-      width: 64px;
-      padding: 8px;
-      @include pixelart;
-      background-color: white;
-      border-radius: 1rem;
+    .container {
+      img {
+        width: 64px;
+        padding: 8px;
+        @include pixelart;
+        background-color: white;
+        border-radius: 1rem;
+      }
+
+      &.amount {
+        position: relative;
+
+        &::after {
+          content: var(--amount);
+          position: absolute;
+          top: -6px;
+          right: -6px;
+          color: black;
+          background-color: white;
+          border: 1px solid black;
+          border-radius: 8px;
+          font-size: 16px;
+          padding: 2px 8px;
+        }
+      }
     }
 
     span {

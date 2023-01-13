@@ -1,8 +1,16 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { hitReducer, initlialLastLeftTile, initlialTarget, initlialTargetPreview, initlialTargetPreviewPos, isHit } from '../helpers';
-import { HitType, LastLeftTileType, TargetPreviewPosType, TargetPreviewType, TargetType } from '../interfaces';
+import { HitType, ItemsType, LastLeftTileType, TargetListType, TargetModifierType, TargetPreviewPosType, TargetPreviewType, TargetType } from '../interfaces';
 import Item from './Item';
 import Target from './Target';
+
+export const modes = {
+    none: { xEnable: true, yEnable: true, type: 'none' },
+    radar: { xEnable: true, yEnable: true, type: 'radar' },
+    hTorpedo: { xEnable: true, yEnable: false, type: 'torpedo' },
+    vTorpedo: { xEnable: false, yEnable: true, type: 'torpedo' },
+    missle: { xEnable: false, yEnable: false, type: 'missle' }
+}
 
 function useGameEvent(count: number) {
     const [lastLeftTile, setLastLeftTile] = useState<LastLeftTileType>(initlialLastLeftTile);
@@ -13,36 +21,27 @@ function useGameEvent(count: number) {
     const [targetPreviewPos, setTargetPreviewPos] = useState<TargetPreviewPosType>(initlialTargetPreviewPos);
     const [hits, DispatchHits] = useReducer(hitReducer, [] as HitType[]);
     const [mode, setMode] = useState<keyof typeof modes>('none')
-    const [targetList, setTargetList] = useState<{
-        show: boolean;
-        x: number;
-        y: number;
-        edges: string[];
-    }[]>([])
-    const [targetPreviewList, setTargetPreviewList] = useState<{
-        show: boolean;
-        x: number;
-        y: number;
-        edges: string[];
-    }[]>([])
+    const [targetList, setTargetList] = useState<TargetListType[]>([])
+    const [targetPreviewList, setTargetPreviewList] = useState<TargetListType[]>([])
 
-    const modes = useMemo(() => ({
-        none: { xEnable: true, yEnable: true, type: 'none' },
-        radar: { xEnable: true, yEnable: true, type: 'radar' },
-        hTorpedo: { xEnable: true, yEnable: false, type: 'torpedo' },
-        vTorpedo: { xEnable: false, yEnable: true, type: 'torpedo' },
-        missle: { xEnable: false, yEnable: false, type: 'missle' }
-    }), [])
-
-    function modXY<T>(e: { show: boolean, x: number, y: number }, mod: { x: number, y: number, edges: string[] }) {
-        return { show: e.show, x: e.x + (mod.x ?? 0), y: e.y + (mod.y ?? 0), edges: mod.edges }
+    function modXY<T>(e: TargetType, mod: TargetModifierType) {
+        const { show, ...pos } = e
+        const { target, params } = mod
+        return {
+            target: {
+                show,
+                x: pos.x + (target.x ?? 0),
+                y: pos.y + (target.y ?? 0)
+            },
+            params
+        }
     }
 
-    const isSet = useCallback((x: number, y: number) => targetList.filter(target => x === target.x && y === target.y).length && target.show, [targetList, target])
+    const isSet = useCallback((x: number, y: number) => targetList.filter(({ target }) => x === target.x && y === target.y).length && target.show, [targetList, target])
 
     const scopeGrid = useMemo(() => {
-        const { xEnable, yEnable, type } = modes[mode]
-        const matrix: { x: number, y: number, edges: string[] }[][] = []
+        const { xEnable, yEnable } = modes[mode]
+        const matrix: TargetModifierType[][] = []
         let y = 0
         let x = 0
         const yLength = (yEnable ? 2 : 0)
@@ -53,38 +52,47 @@ function useGameEvent(count: number) {
                 x = i2 + (xEnable ? -1 : 0);
 
                 (matrix[i] ??= [])[i2] = {
-                    x,
-                    y,
-                    edges: [
-                        i2 === 0 ? 'left' : '',
-                        i2 === xLength ? 'right' : '',
-                        i === 0 ? 'top' : '',
-                        i === yLength ? 'bottom' : '',
-                    ]
+                    target: {
+                        x,
+                        y,
+                    },
+                    params: {
+                        edges: [
+                            i2 === 0 ? 'left' : '',
+                            i2 === xLength ? 'right' : '',
+                            i === 0 ? 'top' : '',
+                            i === yLength ? 'bottom' : '',
+                        ],
+                        imply: false
+                    }
                 }
             }
         }
         const fields = matrix.reduce((prev, curr) => [...prev, ...curr], [])
-        return { fields, type }
-    }, [modes, mode])
+        return fields
+    }, [mode])
 
-    const Targets = useCallback((targets: { show: boolean, x: number, y: number, edges: string[] }[], preview?: boolean) => {
-        const { type } = scopeGrid
-        return targets.map(({ edges, ...target }, i) => <Target key={i} props={{ type, preview, edges }} target={target} />)
-    }, [scopeGrid, mode])
+    const Targets = useCallback((targets: TargetListType[], preview?: boolean) => {
+        const { type } = modes[mode]
+        return targets.map(({ target, params }, i) => <Target key={i} props={{ type, preview, ...params }} target={target} />)
+    }, [mode])
 
     useEffect(() => {
-        const { fields } = scopeGrid
-        const result = fields.map(e => modXY(target, e))
-            .filter(({ x, y }) => {
+        const result = scopeGrid.map(e => modXY(target, e))
+            .filter(({ target: { x, y } }) => {
                 const border = [
                     x < 2,
                     x > count,
                     y < 2,
                     y > count,
                 ].reduce((prev, curr) => prev || curr, false)
-                // console.log(!isHit(hits, x, y).length, !borders)
-                return !isHit(hits, x, y).length && !border
+                return !border
+            }).map(field => {
+                const { target, params } = field
+                const { x, y } = target
+                if (isHit(hits, x, y).length)
+                    return { ...field, params: { ...params, imply: true } }
+                return field
             })
         setTargetList(e => {
             if (JSON.stringify(e) === JSON.stringify(result))
@@ -94,24 +102,30 @@ function useGameEvent(count: number) {
     }, [scopeGrid, target, count, hits]);
 
     useEffect(() => {
-        const { fields } = scopeGrid
-        const result = fields.map(e => modXY(targetPreview, e))
-            .filter(({ x, y }) => {
+        const result = scopeGrid.map(e => modXY(targetPreview, e))
+            .filter(({ target: { x, y } }) => {
                 const border = [
                     x < 2,
                     x > count + 1,
                     y < 2,
                     y > count + 1,
                 ].reduce((prev, curr) => prev || curr, false)
-                // console.log(!isHit(hits, x, y).length, !isSet(x, y), !borders)
-                return !isHit(hits, x, y).length && !isSet(x, y) && !border
+                return !border
+            }).map(field => {
+                const { target, params } = field
+                const { x, y } = target
+                if (isHit(hits, x, y).length || isSet(x, y))
+                    return { ...field, params: { ...params, imply: true } }
+                return field
             })
+        if (!targetPreviewPos.shouldShow)
+            return
         setTargetPreviewList(e => {
             if (JSON.stringify(e) === JSON.stringify(result))
                 return e
             return result
         })
-    }, [scopeGrid, targetPreview, count, hits, isSet]);
+    }, [scopeGrid, targetPreview, count, hits, isSet, targetPreviewPos.shouldShow]);
 
     // handle visibility and position change of targetPreview
     useEffect(() => {
@@ -162,13 +176,13 @@ function useGameEvent(count: number) {
     </>, [Targets, targetList, targetPreviewList])
 
     const eventBar = useMemo(() => {
-        const items = [
-            { icon: 'burger-menu', text: 'Menu' },
-            { icon: 'radar', text: 'Radar scan', type: 'radar' },
-            { icon: 'missle', text: 'Fire torpedo', type: 'hTorpedo' },
-            { icon: 'scope', text: 'Fire missle', type: 'missle' },
-            { icon: 'gear', text: 'Settings' }
-        ]
+        const items: ItemsType[] = [
+                { icon: 'burger-menu', text: 'Menu' },
+                { icon: 'radar', text: 'Radar scan', type: 'radar', amount: 1 },
+                { icon: 'missle', text: 'Fire torpedo', type: 'hTorpedo', amount: 1 },
+                { icon: 'scope', text: 'Fire missle', type: 'missle' },
+                { icon: 'gear', text: 'Settings' }
+            ]
         return (
             <div className='event-bar'>
                 {items.map((e, i) => (
