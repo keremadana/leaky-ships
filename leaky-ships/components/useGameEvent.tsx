@@ -91,7 +91,7 @@ function useGameEvent(count: number) {
                 const { target, params } = field
                 const { x, y } = target
                 if (isHit(hits, x, y).length)
-                    return Object.assign(field, Object.assign(params, { imply: true }))
+                    return { ...field, params: { ...params, imply: true } }
                 return field
             })
         setTargetList(e => {
@@ -115,7 +115,7 @@ function useGameEvent(count: number) {
                 const { target, params } = field
                 const { x, y } = target
                 if (isHit(hits, x, y).length || isSet(x, y))
-                    return Object.assign(field, Object.assign(params, { imply: true }))
+                    return { ...field, params: { ...params, imply: true } }
                 return field
             })
         if (!targetPreviewPos.shouldShow)
