@@ -1,0 +1,94 @@
+@use './mixins/effects' as *;
+$g1: rgb(98, 0, 234);
+$g2: rgb(236, 64, 122);
+
+#tiles {
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: repeat(var(--columns), 1fr);
+    grid-template-rows: repeat(var(--rows), 1fr);
+    background: linear-gradient(to right, $g1, $g2, $g1);
+    background-size: 200%;
+    animation: background-pan 10s linear infinite;
+
+    .tile {
+        position: relative;
+
+        &::before {
+            position: absolute;
+            content: '';
+            background-color: rgb(20, 20, 20);
+            inset: 1px;
+        }
+
+        &.active {
+            opacity: 1;
+            animation: hide .2s forwards;
+            animation-delay: var(--delay);
+        }
+
+        &.inactive {
+            opacity: 0;
+            animation: show .2s forwards;
+            animation-delay: var(--delay);
+        }
+    }
+
+    .center-div {
+        position: absolute;
+        height: 100vh;
+        width: 100vw;
+        display: inherit;
+
+        .headline {
+            margin: auto;
+            font-size: 5em;
+            background-color: rgba(20, 20, 20, 0.2);
+            padding: .25em .5em;
+            border-radius: .25em;
+
+            &.active {
+                opacity: 1;
+                animation: hide 2s forwards;
+                // animation-delay: 1s;
+            }
+
+            &.inactive {
+                opacity: 0;
+                animation: show 2s forwards;
+                // animation-delay: 1s;
+            }
+        }
+    }
+}
+
+@keyframes background-pan {
+    from {
+        background-position: 0% center;
+    }
+
+    to {
+        background-position: -200% center;
+    }
+}
+
+@keyframes hide {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes show {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

@@ -1,0 +1,61 @@
+@mixin transition($timing) {
+    -moz-transition: $timing;
+    -webkit-transition: $timing;
+    -o-transition: $timing;
+    -ms-transition: $timing;
+    transition: $timing;
+}
+@mixin appear($timing) {
+    animation: appear $timing forwards;
+}
+@keyframes appear {
+    From {
+        opacity: 0;
+    }
+    To {
+        opacity: 1;
+    }
+}
+@mixin gradient-edge {
+    &.left-top-corner {
+    -webkit-mask-image: -webkit-gradient(linear, right bottom, 
+        left top, color-stop(0, rgba(0,0,0,1)), color-stop(0.5, rgba(0,0,0,0)));
+    }
+    &.right-top-corner {
+    -webkit-mask-image: -webkit-gradient(linear, left bottom, 
+        right top, color-stop(0, rgba(0,0,0,1)), color-stop(0.5, rgba(0,0,0,0)));
+    }
+    &.left-bottom-corner {
+    -webkit-mask-image: -webkit-gradient(linear, right top, 
+        left bottom, color-stop(0, rgba(0,0,0,1)), color-stop(0.5, rgba(0,0,0,0)));
+    }
+    &.right-bottom-corner {
+    -webkit-mask-image: -webkit-gradient(linear, left top, 
+        right bottom, color-stop(0, rgba(0,0,0,1)), color-stop(0.5, rgba(0,0,0,0)));
+    }
+
+    &.left {
+    -webkit-mask-image: -webkit-gradient(linear, right top, 
+        left top, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+    }
+    &.right {
+    -webkit-mask-image: -webkit-gradient(linear, left top, 
+        right top, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+    }
+    &.top {
+    -webkit-mask-image: -webkit-gradient(linear, left bottom, 
+        left top, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+    }
+    &.bottom {
+    -webkit-mask-image: -webkit-gradient(linear, left top, 
+        left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+    }
+}
+
+// Pixelart sharpness (no interpolation)
+// https://css-tricks.com/keep-pixelated-images-pixelated-as-they-scale/
+@mixin pixelart {
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+}

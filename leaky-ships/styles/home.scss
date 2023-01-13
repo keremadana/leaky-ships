@@ -1,0 +1,36 @@
+@use './mixins/effects' as *;
+
+#tiles {
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: repeat(var(--columns), 1fr);
+    grid-template-rows: repeat(var(--rows), 1fr);
+
+    .tile {
+        background-color: var(--bg-color-1);
+
+        &.active {
+            animation: bright .3s forwards;
+            animation-delay: var(--delay);
+        }
+    }
+}
+
+@keyframes bright {
+    0% {
+        background-color: var(--bg-color-1);
+    }
+
+    50% {
+
+        background-color: var(--bg-color-2);
+        filter: brightness(130%);
+        outline: 1px solid white;
+    }
+
+    100% {
+
+        background-color: var(--bg-color-2);
+    }
+}
