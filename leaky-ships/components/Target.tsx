@@ -1,4 +1,4 @@
-import { faCrosshairs } from '@fortawesome/free-solid-svg-icons';
+import { faCrosshairs } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CSSProperties } from 'react';
 import classNames from 'classnames';
