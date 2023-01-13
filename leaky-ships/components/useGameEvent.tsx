@@ -1,8 +1,16 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { hitReducer, initlialLastLeftTile, initlialTarget, initlialTargetPreview, initlialTargetPreviewPos, isHit } from '../helpers';
-import { HitType, LastLeftTileType, TargetListType, TargetModifierType, TargetPreviewPosType, TargetPreviewType, TargetType } from '../interfaces';
+import { HitType, ItemsType, LastLeftTileType, TargetListType, TargetModifierType, TargetPreviewPosType, TargetPreviewType, TargetType } from '../interfaces';
 import Item from './Item';
 import Target from './Target';
+
+export const modes = {
+    none: { xEnable: true, yEnable: true, type: 'none' },
+    radar: { xEnable: true, yEnable: true, type: 'radar' },
+    hTorpedo: { xEnable: true, yEnable: false, type: 'torpedo' },
+    vTorpedo: { xEnable: false, yEnable: true, type: 'torpedo' },
+    missle: { xEnable: false, yEnable: false, type: 'missle' }
+}
 
 function useGameEvent(count: number) {
     const [lastLeftTile, setLastLeftTile] = useState<LastLeftTileType>(initlialLastLeftTile);
@@ -15,14 +23,6 @@ function useGameEvent(count: number) {
     const [mode, setMode] = useState<keyof typeof modes>('none')
     const [targetList, setTargetList] = useState<TargetListType[]>([])
     const [targetPreviewList, setTargetPreviewList] = useState<TargetListType[]>([])
-
-    const modes = useMemo(() => ({
-        none: { xEnable: true, yEnable: true, type: 'none' },
-        radar: { xEnable: true, yEnable: true, type: 'radar' },
-        hTorpedo: { xEnable: true, yEnable: false, type: 'torpedo' },
-        vTorpedo: { xEnable: false, yEnable: true, type: 'torpedo' },
-        missle: { xEnable: false, yEnable: false, type: 'missle' }
-    }), [])
 
     function modXY<T>(e: TargetType, mod: TargetModifierType) {
         const { show, ...pos } = e
@@ -70,12 +70,12 @@ function useGameEvent(count: number) {
         }
         const fields = matrix.reduce((prev, curr) => [...prev, ...curr], [])
         return fields
-    }, [modes, mode])
+    }, [mode])
 
     const Targets = useCallback((targets: TargetListType[], preview?: boolean) => {
         const { type } = modes[mode]
         return targets.map(({ target, params }, i) => <Target key={i} props={{ type, preview, ...params }} target={target} />)
-    }, [modes, mode])
+    }, [mode])
 
     useEffect(() => {
         const result = scopeGrid.map(e => modXY(target, e))
@@ -176,13 +176,13 @@ function useGameEvent(count: number) {
     </>, [Targets, targetList, targetPreviewList])
 
     const eventBar = useMemo(() => {
-        const items = [
-            { icon: 'burger-menu', text: 'Menu' },
-            { icon: 'radar', text: 'Radar scan', type: 'radar' },
-            { icon: 'missle', text: 'Fire torpedo', type: 'hTorpedo' },
-            { icon: 'scope', text: 'Fire missle', type: 'missle' },
-            { icon: 'gear', text: 'Settings' }
-        ]
+        const items: ItemsType[] = [
+                { icon: 'burger-menu', text: 'Menu' },
+                { icon: 'radar', text: 'Radar scan', type: 'radar', amount: 1 },
+                { icon: 'missle', text: 'Fire torpedo', type: 'hTorpedo', amount: 1 },
+                { icon: 'scope', text: 'Fire missle', type: 'missle' },
+                { icon: 'gear', text: 'Settings' }
+            ]
         return (
             <div className='event-bar'>
                 {items.map((e, i) => (

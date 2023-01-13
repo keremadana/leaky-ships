@@ -1,3 +1,5 @@
+import { modes } from "./components/useGameEvent";
+
 export type LastLeftTileType = {
     x: number,
     y: number
@@ -37,6 +39,12 @@ export type TargetModifierType = {
         edges: string[],
         imply: boolean
     }
+}
+export type ItemsType = {
+    icon: string,
+    text: string,
+    type?: keyof typeof modes,
+    amount?: number,
 }
 export type FieldType = {
     field: string,
