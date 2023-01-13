@@ -168,6 +168,29 @@ body {
       @include transition(.5s);
     }
 
+    &.radar {
+      --color: limegreen;
+      border: 5px solid var(--color);
+      grid-column-start: var(--x1) !important;
+      grid-column-end: var(--x2) !important;
+      grid-row-start: var(--y1) !important;
+      grid-row-end: var(--y2) !important;
+
+      &.imply {
+        box-shadow: 0 0 6px 6px #fff4;
+      }
+
+      &.target-preview {
+        --color: lawngreen;
+        background-color: #0001;
+        border: 5px dashed var(--color);
+      }
+
+      svg {
+        padding: 12.5%;
+      }
+    }
+
     &.show {
       opacity: 1;
     }
@@ -192,15 +215,15 @@ body {
       border-bottom: 2px solid var(--color);
     }
 
-    &.imply.left {
+    &.edge.imply.left {
       border-left: 2px dashed white;
     }
 
-    &.imply.right {
+    &.edge.imply.right {
       border-right: 2px dashed white;
     }
 
-    &.imply.top {
+    &.edge.imply.top {
       border-top: 2px dashed white;
     }
 

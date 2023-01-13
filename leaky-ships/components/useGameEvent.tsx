@@ -5,8 +5,8 @@ import Item from './Item';
 import Target from './Target';
 
 export const modes = {
-    none: { xEnable: true, yEnable: true, type: 'none' },
-    radar: { xEnable: true, yEnable: true, type: 'radar' },
+    none: { xEnable: false, yEnable: false, type: 'none' },
+    radar: { xEnable: false, yEnable: false, type: 'radar' },
     hTorpedo: { xEnable: true, yEnable: false, type: 'torpedo' },
     vTorpedo: { xEnable: false, yEnable: true, type: 'torpedo' },
     missle: { xEnable: false, yEnable: false, type: 'missle' }
@@ -74,7 +74,7 @@ function useGameEvent(count: number) {
 
     const Targets = useCallback((targets: TargetListType[], preview?: boolean) => {
         const { type } = modes[mode]
-        return targets.map(({ target, params }, i) => <Target key={i} props={{ type, preview, ...params }} target={target} />)
+        return targets.map(({ target, params }, i) => <Target key={i} props={{ type, preview, ...params, ...target }} />)
     }, [mode])
 
     useEffect(() => {
@@ -162,7 +162,7 @@ function useGameEvent(count: number) {
         // early return to start cooldown only when about to show up
         const autoTimeout = setTimeout(() => {
             setAppearOK(!targetPreview.show)
-        }, 500);
+        }, 600);
 
         // or abort if movement is repeated early
         return () => {
@@ -177,12 +177,12 @@ function useGameEvent(count: number) {
 
     const eventBar = useMemo(() => {
         const items: ItemsType[] = [
-                { icon: 'burger-menu', text: 'Menu' },
-                { icon: 'radar', text: 'Radar scan', type: 'radar', amount: 1 },
-                { icon: 'missle', text: 'Fire torpedo', type: 'hTorpedo', amount: 1 },
-                { icon: 'scope', text: 'Fire missle', type: 'missle' },
-                { icon: 'gear', text: 'Settings' }
-            ]
+            { icon: 'burger-menu', text: 'Menu' },
+            { icon: 'radar', text: 'Radar scan', type: 'radar', amount: 1 },
+            { icon: 'missle', text: 'Fire torpedo', type: 'hTorpedo', amount: 1 },
+            { icon: 'scope', text: 'Fire missle', type: 'missle' },
+            { icon: 'gear', text: 'Settings' }
+        ]
         return (
             <div className='event-bar'>
                 {items.map((e, i) => (
