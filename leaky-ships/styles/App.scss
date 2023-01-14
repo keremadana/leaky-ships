@@ -159,35 +159,42 @@ body {
       --color: red;
       color: var(--color);
       opacity: 0;
+
+      &.preview {
+        --color: orange;
+      }
     }
 
-    &.target-preview {
-      --color: orange;
-      color: var(--color);
+    &.preview {
       opacity: 0;
       @include transition(.5s);
     }
 
     &.radar {
       --color: limegreen;
-      border: 5px solid var(--color);
-      grid-column-start: var(--x1) !important;
-      grid-column-end: var(--x2) !important;
-      grid-row-start: var(--y1) !important;
-      grid-row-end: var(--y2) !important;
+
+      svg {
+        opacity: 0;
+      }
+
+      &:not(.left):not(.right):not(.top):not(.bottom) {
+        // border: 5px solid var(--color);
+        grid-area: var(--y1) /var(--x1) /var(--y2) /var(--x2);
+
+        svg {
+          opacity: 1;
+          padding: 12.5%;
+        }
+      }
 
       &.imply {
         box-shadow: 0 0 6px 6px #fff4;
       }
 
-      &.target-preview {
+      &.preview {
         --color: lawngreen;
         background-color: #0001;
-        border: 5px dashed var(--color);
-      }
-
-      svg {
-        padding: 12.5%;
+        // border: 5px dashed var(--color);
       }
     }
 
@@ -215,20 +222,22 @@ body {
       border-bottom: 2px solid var(--color);
     }
 
-    &.edge.imply.left {
-      border-left: 2px dashed white;
-    }
+    &.imply {
+      &.left {
+        border-left: 2px dashed white;
+      }
 
-    &.edge.imply.right {
-      border-right: 2px dashed white;
-    }
+      &.right {
+        border-right: 2px dashed white;
+      }
 
-    &.edge.imply.top {
-      border-top: 2px dashed white;
-    }
+      &.top {
+        border-top: 2px dashed white;
+      }
 
-    &.imply.bottom {
-      border-bottom: 2px dashed white;
+      &.bottom {
+        border-bottom: 2px dashed white;
+      }
     }
 
     &.left.top {

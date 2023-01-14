@@ -76,7 +76,7 @@ function Homepage() {
 
         return (
             <div id='tiles' style={{ '--columns': params.columns, '--rows': params.rows, '--bg-color-1': colors[count % colors.length], '--bg-color-2': colors[(count + 1) % colors.length] } as CSSProperties}>
-                {Array.from(Array(params.quantity)).map((_tile, index) => createTile(index))}
+                {Array.from(Array(params.quantity), (_tile, index) => createTile(index))}
             </div>
         )
     }, [params, position, active, count])

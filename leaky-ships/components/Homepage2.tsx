@@ -81,7 +81,7 @@ function Homepage2() {
                 <div className="center-div">
                     <h1 className={classNames('headline', (!active ? 'active' : 'inactive'))}>{sentences[count % sentences.length]}</h1>
                 </div>
-                {Array.from(Array(params.quantity)).map((_tile, index) => createTile(index))}
+                {Array.from(Array(params.quantity), (_tile, index) => createTile(index))}
             </div >
         )
     }, [params, position, active, action, count])

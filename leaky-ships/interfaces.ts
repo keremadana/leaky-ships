@@ -1,15 +1,9 @@
-import { modes } from "./components/useGameEvent";
-
 export type LastLeftTileType = {
     x: number,
     y: number
 }
 export type TargetType = {
-    show: boolean,
-    x: number,
-    y: number
-};
-export type TargetPreviewType = {
+    preview: boolean,
     show: boolean,
     x: number,
     y: number
@@ -20,30 +14,19 @@ export type TargetPreviewPosType = {
     y: number
 }
 export type TargetListType = {
-    target: {
-        show: boolean,
-        x: number,
-        y: number,
-    },
-    params: {
-        edges: string[],
-        imply: boolean
-    }
+    x: number,
+    y: number,
+    type: string,
+    edges: string[]
 }
-export type TargetModifierType = {
-    target: {
-        x: number,
-        y: number,
-    },
-    params: {
-        edges: string[],
-        imply: boolean
-    }
+export type ModeType = {
+    pointerGrid: any[][],
+    type: string
 }
 export type ItemsType = {
     icon: string,
     text: string,
-    type?: keyof typeof modes,
+    mode?: number,
     amount?: number,
 }
 export type FieldType = {

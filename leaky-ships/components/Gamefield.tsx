@@ -14,10 +14,9 @@ function Gamefield() {
         targets,
         eventBar,
         setLastLeftTile,
-        setTarget,
+        settingTarget,
         setTargetPreviewPos,
-        hits,
-        DispatchHits
+        hits
     } = useGameEvent(count);
 
     return (
@@ -25,7 +24,7 @@ function Gamefield() {
             {/* <Bluetooth /> */}
             <div id="game-frame" style={{ '--i': count } as CSSProperties}>
                 {/* Bordes */}
-                <BorderTiles props={{ count, setTarget, setTargetPreviewPos, hits, DispatchHits, setLastLeftTile }} />
+                <BorderTiles props={{ count, settingTarget, setTargetPreviewPos, setLastLeftTile }} />
 
                 {/* Collumn lettes and row numbers */}
                 <Labeling count={count} />
@@ -38,6 +37,7 @@ function Gamefield() {
                 {/* Fog images */}
                 {/* <FogImages /> */}
                 {targets}
+                {/* <span id='dev-debug' style={{gridArea: '1 / 12 / 1 / 15', backgroundColor: 'red', zIndex: 3} as CSSProperties}>Debug</span> */}
             </div>
             {eventBar}
         </div>

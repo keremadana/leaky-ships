@@ -1,24 +1,24 @@
 import { CSSProperties, Dispatch, SetStateAction } from 'react';
-import { borderCN, cornerCN, fieldIndex, isHit } from '../helpers';
-import { HitDispatchType, HitType, LastLeftTileType, TargetPreviewPosType, TargetType } from '../interfaces';
+import { borderCN, cornerCN, fieldIndex } from '../helpers';
+import { LastLeftTileType, TargetPreviewPosType } from '../interfaces';
 
-function BorderTiles({ props: { count, setTarget, setTargetPreviewPos, hits, DispatchHits, setLastLeftTile } }: {
+type TilesType = {
+    key: number,
+    isGameTile: boolean,
+    classNameString: string,
+    x: number,
+    y: number
+}
+
+function BorderTiles({ props: { count, settingTarget, setTargetPreviewPos, setLastLeftTile } }: {
     props: {
         count: number,
-        setTarget: Dispatch<SetStateAction<TargetType>>,
+        settingTarget: (isGameTile: boolean, x: number, y: number) => void,
         setTargetPreviewPos: Dispatch<SetStateAction<TargetPreviewPosType>>,
-        hits: HitType[],
-        DispatchHits: Dispatch<HitDispatchType>,
         setLastLeftTile: Dispatch<SetStateAction<LastLeftTileType>>
     }
 }) {
-    let tilesProperties: {
-        key: number,
-        isGameTile: boolean,
-        classNameString: string,
-        x: number,
-        y: number
-    }[] = [];
+    let tilesProperties: TilesType[] = [];
 
     for (let y = 0; y < count + 2; y++) {
         for (let x = 0; x < count + 2; x++) {
@@ -41,20 +41,7 @@ function BorderTiles({ props: { count, setTarget, setTargetPreviewPos, hits, Dis
                 key={key}
                 className={classNameString}
                 style={{ '--x': x, '--y': y } as CSSProperties}
-                onClick={() => {
-                    if (!isGameTile || isHit(hits, x, y).length)
-                        return;
-                    setTargetPreviewPos(e => ({ ...e, shouldShow: false }))
-                    setTarget(t => {
-                        if (t.x === x && t.y === y && t.show) {
-                            DispatchHits({ type: 'fireMissle', payload: { hit: (x + y) % 2 !== 0, x, y } });
-                            return { show: false, x, y };
-                        } else {
-                            return { show: true, x, y };
-                        }
-                    });
-
-                }}
+                onClick={() => settingTarget(isGameTile, x, y)}
                 onMouseEnter={() => setTargetPreviewPos({ x, y, shouldShow: isGameTile })}
                 onMouseLeave={() => setLastLeftTile({ x, y })}
             ></div>
