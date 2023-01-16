@@ -1,0 +1,98 @@
+#box {
+    border: 2px solid black;
+    height: 100vh;
+    width: 100vw;
+    background-color: #282c34;
+
+    #navExpand {
+        position: absolute;
+        top: 64px;
+        left: 64px;
+        width: 96px;
+        height: 96px;
+        background-color: black;
+        border-radius: 8px;
+        border: none;
+
+        svg {
+            height: 50%;
+            width: 50%;
+            color: white;
+        }
+    }
+
+    .beforeStartBox {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+        height: 100%;
+        width: 100%;
+
+        #shield {
+            width: 450px;
+
+        }
+
+        #videoWrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 225px;
+            width: 525px;
+            background-color: #2227;
+            border: 2px solid black;
+            border-radius: 8px;
+
+            svg {
+                font-size: 4em;
+                color: #231f20;
+
+                path {
+                    stroke: black;
+                    stroke-width: 2px;
+                    stroke-linejoin: round;
+                }
+            }
+        }
+
+        #startButton {
+            font-size: 2.5em;
+            color: white;
+            background-color: black;
+            border: none;
+            border-radius: 8px;
+            padding: 2rem 6rem;
+        }
+
+        #startBox {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #B1B2B5CC;
+            border: 3px solid black;
+            padding: 3rem;
+            border-radius: 8px;
+            min-width: 60vw;
+
+            div {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3rem;
+
+                .optionButton {
+                    font-size: 2em;
+                    color: #B1B2B5CC;
+                    background-color: #000C;
+                    border: none;
+                    border-radius: 8px;
+                    padding: 1rem 4rem;
+                    width: 100%;
+                }
+
+            }
+
+        }
+    }
+}

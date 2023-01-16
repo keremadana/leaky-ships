@@ -1,4 +1,4 @@
-import { faBurst, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faBurst, faXmark } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CSSProperties } from 'react';
 import { HitType } from '../interfaces';

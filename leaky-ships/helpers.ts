@@ -40,11 +40,13 @@ export const initlialLastLeftTile = {
     y: 0
 };
 export const initlialTarget = {
+    preview: false,
     show: false,
     x: 2,
     y: 2
 };
 export const initlialTargetPreview = {
+    preview: true,
     show: false,
     x: 2,
     y: 2
