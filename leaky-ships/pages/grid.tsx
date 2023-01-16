@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import Homepage2 from '../components/Homepage2'
+import Grid from '../components/Grid'
 
 export default function Home() {
   return (
@@ -13,7 +13,7 @@ export default function Home() {
       <main>
         <div className="App">
           <header className="App-header">
-            <Homepage2 />
+            <Grid />
           </header>
         </div>
       </main>

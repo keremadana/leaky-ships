@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { CSSProperties, useEffect, useMemo, useState } from 'react'
 
-function Homepage2() {
+function Grid2() {
 
     const floorClient = (number: number) => Math.floor(number / 50)
 
@@ -89,4 +89,4 @@ function Homepage2() {
     return createTiles
 }
 
-export default Homepage2
+export default Grid2

@@ -12,10 +12,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <p><Link href='/gamefield'>Gamefield</Link></p>
-        <p><Link href='/homepage'>Homepage</Link></p>
-        <p><Link href='/homepage2'>Homepage2</Link></p>
-        <p><Link href='/socketio'>SocketIO</Link></p>
+        <p><Link href='/gamefield' target='_blank'>Gamefield</Link></p>
+        <p><Link href='/grid' target='_blank'>Grid Effect</Link></p>
+        <p><Link href='/grid2' target='_blank'>Grid Effect with Content</Link></p>
+        <p><Link href='/socketio' target='_blank'>SocketIO</Link></p>
       </main>
     </>
   )
