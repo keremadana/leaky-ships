@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import { XStateTest } from '../components/xstate/test'
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         <p><Link href='/grid' target='_blank'>Grid Effect</Link></p>
         <p><Link href='/grid2' target='_blank'>Grid Effect with Content</Link></p>
         <p><Link href='/socketio' target='_blank'>SocketIO</Link></p>
+        <XStateTest />
       </main>
     </>
   )
