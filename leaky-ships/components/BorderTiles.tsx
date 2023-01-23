@@ -1,6 +1,6 @@
-import { CSSProperties, Dispatch, SetStateAction } from 'react';
-import { borderCN, cornerCN, fieldIndex } from '../helpers';
-import { LastLeftTileType, TargetPreviewPosType } from '../interfaces';
+import { CSSProperties, Dispatch, SetStateAction } from 'react'
+import { borderCN, cornerCN, fieldIndex } from '../helpers'
+import { Position, MouseCursor } from '../interfaces'
 
 type TilesType = {
     key: number,
@@ -10,27 +10,27 @@ type TilesType = {
     y: number
 }
 
-function BorderTiles({ props: { count, settingTarget, setTargetPreviewPos, setLastLeftTile } }: {
+function BorderTiles({ props: { count, settingTarget, setMouseCursor, setLastLeftTile } }: {
     props: {
         count: number,
         settingTarget: (isGameTile: boolean, x: number, y: number) => void,
-        setTargetPreviewPos: Dispatch<SetStateAction<TargetPreviewPosType>>,
-        setLastLeftTile: Dispatch<SetStateAction<LastLeftTileType>>
+        setMouseCursor: Dispatch<SetStateAction<MouseCursor>>,
+        setLastLeftTile: Dispatch<SetStateAction<Position>>
     }
 }) {
-    let tilesProperties: TilesType[] = [];
+    let tilesProperties: TilesType[] = []
 
     for (let y = 0; y < count + 2; y++) {
         for (let x = 0; x < count + 2; x++) {
-            const key = fieldIndex(count, x, y);
-            const cornerReslt = cornerCN(count, x, y);
-            const borderType = cornerReslt ? cornerReslt : borderCN(count, x, y);
-            const isGameTile = x > 0 && x < count + 1 && y > 0 && y < count + 1;
-            const classNames = ['border-tile'];
+            const key = fieldIndex(count, x, y)
+            const cornerReslt = cornerCN(count, x, y)
+            const borderType = cornerReslt ? cornerReslt : borderCN(count, x, y)
+            const isGameTile = x > 0 && x < count + 1 && y > 0 && y < count + 1
+            const classNames = ['border-tile']
             if (borderType)
-                classNames.push('edge', borderType);
+                classNames.push('edge', borderType)
             if (isGameTile)
-                classNames.push('game-tile');
+                classNames.push('game-tile')
             const classNameString = classNames.join(' ')
             tilesProperties.push({ key, classNameString, isGameTile, x: x + 1, y: y + 1 })
         }
@@ -42,11 +42,11 @@ function BorderTiles({ props: { count, settingTarget, setTargetPreviewPos, setLa
                 className={classNameString}
                 style={{ '--x': x, '--y': y } as CSSProperties}
                 onClick={() => settingTarget(isGameTile, x, y)}
-                onMouseEnter={() => setTargetPreviewPos({ x, y, shouldShow: isGameTile })}
+                onMouseEnter={() => setMouseCursor({ x, y, shouldShow: isGameTile })}
                 onMouseLeave={() => setLastLeftTile({ x, y })}
             ></div>
         })}
     </>
 }
 
-export default BorderTiles;
+export default BorderTiles

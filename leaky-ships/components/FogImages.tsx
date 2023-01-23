@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "next/image"
 
 function FogImages() {
     return <>
@@ -8,4 +8,4 @@ function FogImages() {
     </>
 }
 
-export default FogImages;
+export default FogImages

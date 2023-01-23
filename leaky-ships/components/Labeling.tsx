@@ -1,12 +1,12 @@
-import classNames from 'classnames';
+import classNames from 'classnames'
 import { CSSProperties } from 'react'
-import { fieldIndex } from '../helpers';
-import { FieldType } from '../interfaces';
+import { fieldIndex } from '../helpers'
+import { Field } from '../interfaces'
 
 function Labeling({count}: {count: number}) {
-    let elems: (FieldType & {
+    let elems: (Field & {
         orientation: string
-    })[] = [];
+    })[] = []
     for (let x = 0; x < count; x++) {
         elems.push(
             // Up
@@ -17,9 +17,9 @@ function Labeling({count}: {count: number}) {
             {field: String.fromCharCode(65+x), x: x+2, y: count+2, orientation: 'bottom'},
             // Right
             {field: (x+1).toString(), x: count+2, y: x+2, orientation: 'right'}
-        );
+        )
     }
-    elems = elems.sort((a, b) => fieldIndex(count, a.x, a.y)-fieldIndex(count, b.x, b.y));
+    elems = elems.sort((a, b) => fieldIndex(count, a.x, a.y)-fieldIndex(count, b.x, b.y))
     return <>
         {elems.map(({field, x, y, orientation}, i) =>
             <span key={i} className={classNames('label', orientation, field)} style={{'--x': x, '--y': y} as CSSProperties}>{field}</span>
@@ -27,4 +27,4 @@ function Labeling({count}: {count: number}) {
     </>
 }
 
-export default Labeling;
+export default Labeling

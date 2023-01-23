@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import classNames from 'classnames'
 import { CSSProperties } from 'react'
 
 function Ships() {
@@ -9,7 +9,7 @@ function Ships() {
         { size: 3, index: 3 },
         { size: 4, index: 1 },
         { size: 4, index: 2 }
-    ];
+    ]
 
     return <>
         {shipIndexes.map(({ size, index }, i) => {
@@ -23,4 +23,4 @@ function Ships() {
     </>
 }
 
-export default Ships;
+export default Ships

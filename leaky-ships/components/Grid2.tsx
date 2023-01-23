@@ -3,7 +3,9 @@ import { CSSProperties, useEffect, useMemo, useState } from 'react'
 
 function Grid2() {
 
-    const floorClient = (number: number) => Math.floor(number / 50)
+    function floorClient(number: number) {
+        return Math.floor(number / 50)
+    }
 
     const [columns, setColumns] = useState(0)
     const [rows, setRows] = useState(0)
@@ -47,16 +49,22 @@ function Grid2() {
             const yDiff = (y - position[1]) / 20
             const pos = (Math.sqrt(xDiff * xDiff + yDiff * yDiff)).toFixed(2)
 
-            const doEffect = (posX: number, posY: number) => {
+            function doEffect(posX: number, posY: number) {
                 if (action)
                     return
                 setPosition([posX, posY])
                 setActve(e => !e)
                 setAction(true)
 
-                const xDiff = (x: number) => (x - posX) / 50
-                const yDiff = (y: number) => (y - posY) / 50
-                const pos = (x: number, y: number) => Math.sqrt(xDiff(x) * xDiff(x) + yDiff(y) * yDiff(y))
+                function xDiff(x: number) {
+                    return (x - posX) / 20
+                }
+                function yDiff(y: number) {
+                    return (y - posY) / 20
+                }
+                function pos(x: number, y: number) {
+                    return Math.sqrt(xDiff(x) * xDiff(x) + yDiff(y) * yDiff(y))
+                }
                 const diagonals = [pos(0, 0), pos(params.columns, 0), pos(0, params.rows), pos(params.columns, params.rows)]
 
                 setTimeout(() => {

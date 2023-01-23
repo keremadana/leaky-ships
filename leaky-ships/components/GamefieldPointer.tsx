@@ -1,8 +1,8 @@
-import { faCrosshairs } from '@fortawesome/pro-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CSSProperties } from 'react';
-import classNames from 'classnames';
-import { faRadar } from '@fortawesome/pro-thin-svg-icons';
+import { faCrosshairs } from '@fortawesome/pro-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { CSSProperties } from 'react'
+import classNames from 'classnames'
+import { faRadar } from '@fortawesome/pro-thin-svg-icons'
 
 function GamefieldPointer({ props: {
     preview,

@@ -1,9 +1,9 @@
-import { faBurst, faXmark } from '@fortawesome/pro-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CSSProperties } from 'react';
-import { HitType } from '../interfaces';
+import { faBurst, faXmark } from '@fortawesome/pro-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { CSSProperties } from 'react'
+import { Hit } from '../interfaces'
 
-function HitElems({hits}: {hits: HitType[]}) {
+function HitElems({hits}: {hits: Hit[]}) {
 
     return <>
         {hits.map(({hit, x, y}, i) => 
@@ -14,4 +14,4 @@ function HitElems({hits}: {hits: HitType[]}) {
     </>
 }
 
-export default HitElems;
+export default HitElems

@@ -1,61 +1,50 @@
-export type LastLeftTileType = {
+export interface Position {
     x: number,
     y: number
 }
-export type TargetType = {
+export interface Target extends Position {
     preview: boolean,
-    show: boolean,
-    x: number,
-    y: number
-};
-export type TargetPreviewPosType = {
-    shouldShow: boolean,
-    x: number,
-    y: number
+    show: boolean
 }
-export type TargetListType = {
-    x: number,
-    y: number,
+export interface MouseCursor extends Position {
+    shouldShow: boolean
+}
+export interface TargetList extends Position {
     type: string,
     edges: string[]
 }
-export type ModeType = {
+export interface Mode {
     pointerGrid: any[][],
     type: string
 }
-export type ItemsType = {
+export interface Items {
     icon: string,
     text: string,
     mode?: number,
     amount?: number,
 }
-export type FieldType = {
-    field: string,
-    x: number,
-    y: number,
-};
-export type HitType = {
-    hit: boolean,
-    x: number,
-    y: number,
-};
+export interface Field extends Position {
+    field: string
+}
+export interface Hit extends Position {
+    hit: boolean
+}
 
-type fireMissle = {
-    type: 'fireMissle',
+interface fireMissile {
+    type: 'fireMissile',
     payload: {
         x: number,
         y: number,
         hit: boolean
     }
-};
-type removeMissle = {
-    type:
-    'removeMissle',
+}
+interface removeMissile {
+    type: 'removeMissile',
     payload: {
         x: number,
         y: number,
         hit: boolean
     }
-};
+}
 
-export type HitDispatchType = fireMissle | removeMissle;
+export type HitDispatch = fireMissile | removeMissile
