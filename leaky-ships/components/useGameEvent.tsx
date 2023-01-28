@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
-import { hitReducer, initlialLastLeftTile, initlialTarget, initlialTargetPreview, initlialMouseCursor, isHit } from '../helpers'
-import { Hit, Items, Mode, MouseCursor, Target, Position } from '../interfaces'
+import { hitReducer, initlialLastLeftTile, initlialTarget, initlialTargetPreview, initlialMouseCursor, isHit } from '../utils/helpers'
+import { Hit, Items, Mode, MouseCursor, Target, Position } from '../interfaces/frontend'
 import Item from './Item'
 import GamefieldPointer from './GamefieldPointer'
 

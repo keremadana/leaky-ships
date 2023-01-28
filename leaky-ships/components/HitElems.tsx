@@ -1,7 +1,7 @@
 import { faBurst, faXmark } from '@fortawesome/pro-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CSSProperties } from 'react'
-import { Hit } from '../interfaces'
+import { Hit } from '../interfaces/frontend'
 
 function HitElems({hits}: {hits: Hit[]}) {
 

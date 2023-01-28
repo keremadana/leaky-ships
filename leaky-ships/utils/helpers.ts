@@ -1,4 +1,4 @@
-import { Hit, HitDispatch } from "./interfaces"
+import { Hit, HitDispatch } from "../interfaces/frontend"
 
 export function borderCN(count: number, x: number, y: number) {
     if (x === 0)

@@ -1,6 +1,6 @@
 import { CSSProperties, Dispatch, SetStateAction } from 'react'
-import { borderCN, cornerCN, fieldIndex } from '../helpers'
-import { Position, MouseCursor } from '../interfaces'
+import { borderCN, cornerCN, fieldIndex } from '../utils/helpers'
+import { Position, MouseCursor } from '../interfaces/frontend'
 
 type TilesType = {
     key: number,

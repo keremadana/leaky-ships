@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { CSSProperties } from 'react'
-import { fieldIndex } from '../helpers'
-import { Field } from '../interfaces'
+import { fieldIndex } from '../utils/helpers'
+import { Field } from '../interfaces/frontend'
 
 function Labeling({count}: {count: number}) {
     let elems: (Field & {
