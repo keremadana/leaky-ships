@@ -1,0 +1,32 @@
+- create game 
+- game settings 
+    - allow spectators 
+    - allow special move 
+    - allow chat 
+    - game time (optional)
+    - move time (optional)
+    - allow draw / mark
+    - sync game settings 
+- wait for player
+- moves
+    - player emits
+    - player recieves (server tansmit)
+    - draw emiting 
+    - (reconnect) all game states 
+    - player won 
+    - (spectators) player watching 
+- win game 
+    - player ID, (optional) End screen, game statsitcs 
+
+---
+
+- player regsiter 
+- player login
+- player logout 
+- player dashboard 
+    - game history 
+    - statistics 
+    - replay optional 
+    - (friends) 
+- running game (alert)
+
